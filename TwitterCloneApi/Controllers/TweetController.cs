@@ -23,6 +23,7 @@ namespace TwitterCloneApi.Controllers
         [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
         {
+            
             List<Tweet> tweets = await contextApi.Tweet.OrderByDescending(t => t.CreatedAt).ToListAsync();
             return Ok(tweets);
         }
