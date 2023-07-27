@@ -23,7 +23,8 @@ namespace TwitterCloneApi.Controllers
         [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
         {
-            List<Tweet> tweets = await contextApi.Tweet.OrderByDescending(t => t.CreatedAt).ToListAsync();
+            
+            List<Tweet> tweets = await contextApi.Tweet.Include(t => t.Author).OrderByDescending(t => t.CreatedAt).ToListAsync();
             return Ok(tweets);
         }
          
@@ -48,7 +49,10 @@ namespace TwitterCloneApi.Controllers
             dummy.Email = "test";
             dummy.Id = Guid.NewGuid().ToString();
             tweet.Author = dummy;
-
+            if (await contextApi.Tweet.FindAsync("test") != null)
+            {
+                await contextApi.User.AddAsync(dummy);
+            }
             //end
 
             await contextApi.Tweet.AddAsync(tweet);

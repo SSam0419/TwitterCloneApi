@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "fzHCdJd8BzOTXM3vHRQQrHAa23HJH1RqGyXEl5GXbhDZ/itvPtsdRx8ueaTFykdaXqDS7+voSnPg27IPSSJXKA==",
+  "dgSpecHash": "FJaTRrT4kZvL72QyurJfzZlqbm0WHXa4xwCpe17ZNDjlMPAhrANIehsoAdG0R/si+3/8ms+s8L/257pCsShYlA==",
   "success": true,
   "projectFilePath": "E:\\Users\\leemi\\source\\repos\\TwitterCloneApi\\TwitterCloneApi\\TwitterCloneApi.csproj",
   "expectedPackageFiles": [
+    "E:\\Users\\leemi\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "E:\\Users\\leemi\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "E:\\Users\\leemi\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "E:\\Users\\leemi\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",
