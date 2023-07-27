@@ -44,7 +44,8 @@ namespace TwitterCloneApi.Middlewares
                 string refreshToken = context.Request.Cookies["refresh_token"];
                 if (!string.IsNullOrEmpty(refreshToken) && TokenService.ValidateToken(refreshToken, out validatedToken))
                 {
-                    string userId = validatedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    //string userId = validatedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    string userId = validatedToken.Id;
 
                     // Generate new access and refresh tokens
                     string newAccessToken = TokenService.GenerateAccessToken(userId);
