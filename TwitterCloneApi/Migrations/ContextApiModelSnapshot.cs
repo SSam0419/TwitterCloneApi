@@ -118,6 +118,31 @@ namespace TwitterCloneApi.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("TwitterCloneApi.Models.UserConfidentials", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserConfidentials");
+                });
+
             modelBuilder.Entity("TwitterCloneApi.Models.Comment", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "Author")
@@ -157,6 +182,17 @@ namespace TwitterCloneApi.Migrations
                     b.HasOne("TwitterCloneApi.Models.User", null)
                         .WithMany("Followers")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("TwitterCloneApi.Models.UserConfidentials", b =>
+                {
+                    b.HasOne("TwitterCloneApi.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.Comment", b =>

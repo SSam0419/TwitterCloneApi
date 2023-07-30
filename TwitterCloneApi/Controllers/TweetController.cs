@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TwitterCloneApi.Data;
 using TwitterCloneApi.Models;
@@ -20,10 +21,9 @@ namespace TwitterCloneApi.Controllers
         }
          
         [HttpGet]
-        [Route("GetAllTweetByDate")]
+        [Route("jwt/GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
-        {
-            
+        {   
             List<Tweet> tweets = await contextApi.Tweet.Include(t => t.Author).OrderByDescending(t => t.CreatedAt).ToListAsync();
             return Ok(tweets);
         }
@@ -32,10 +32,10 @@ namespace TwitterCloneApi.Controllers
         [Route("GetAllTweetByUserId/{id}")]
         public async Task<IActionResult> GetAllTweetByUserId([FromRoute] string id)
         {
-            List<Tweet> tweets = await contextApi.Tweet.Where(t => t.Author.Id == id).ToListAsync();
+            List<Tweet> tweets = await contextApi.Tweet.Where(t => t.Author != null && t.Author.Id == id).ToListAsync();
             return Ok(tweets);
         }
-         
+
         [HttpPost]
         [Route("AddTweet")]
         public async Task<IActionResult> AddTweet([FromBody] Tweet tweet)

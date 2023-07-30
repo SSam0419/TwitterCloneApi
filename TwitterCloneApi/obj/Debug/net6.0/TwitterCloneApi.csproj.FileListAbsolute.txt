@@ -491,3 +491,5 @@ C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\refint\TwitterC
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\TwitterCloneApi.pdb
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\TwitterCloneApi.genruntimeconfig.cache
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\ref\TwitterCloneApi.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\BCrypt.Net-Next.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

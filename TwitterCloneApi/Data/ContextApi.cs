@@ -17,6 +17,5 @@ namespace TwitterCloneApi.Data
 
         public DbSet<UserConfidentials> UserConfidentials { get; set;}
 
-
-    }
+        }
 }   
