@@ -63,29 +63,39 @@ namespace TwitterCloneApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegistrationModel registrationModel)
         {
-            UserConfidentials? checkUserConfidential = await contextApi.UserConfidentials.FirstOrDefaultAsync(u => u.Username == registrationModel.UserConfidentials.Username);
+            UserConfidentials? checkUserConfidential = await contextApi.UserConfidentials.FirstOrDefaultAsync(u => u.Username == registrationModel.username);
             if (checkUserConfidential != null)
             {
                 return BadRequest("Username Exist");
             }
             else
             {
-                User newUser = registrationModel.User;
-                UserConfidentials newUserConfidentials = registrationModel.UserConfidentials;
-                string newId = Guid.NewGuid().ToString();
-                newUser.Id = newId;
-                newUserConfidentials.Id = newId;
-                newUserConfidentials.User = newUser;
+                try
+                { 
+                    string newId = Guid.NewGuid().ToString();
+                    User newUser = new User{ Email = registrationModel.username ,Followers = { },IconLink ="",Id = newId, }; 
+                    UserConfidentials newUserConfidentials = new UserConfidentials{ 
+                        Id= newId, 
+                        Username=registrationModel.username,
+                        RefreshToken="",
+                        User=newUser }; 
+ 
 
-                string salt = BCrypt.Net.BCrypt.GenerateSalt(1);
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.UserConfidentials.Password, salt);
-                newUserConfidentials.Password = hashedPassword;
-                newUserConfidentials.Salt = salt;
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt(1);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.password, salt);
+                    newUserConfidentials.Password = hashedPassword;
+                    newUserConfidentials.Salt = salt;
 
-                await contextApi.User.AddAsync(newUser);
-                await contextApi.UserConfidentials.AddAsync(newUserConfidentials);
-                await contextApi.SaveChangesAsync();
-                return Ok(newUser);
+                    await contextApi.User.AddAsync(newUser);
+                    await contextApi.UserConfidentials.AddAsync(newUserConfidentials);
+                    await contextApi.SaveChangesAsync();
+                    return Ok(newUser);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return BadRequest(ex.ToString());
+                }
             } 
         }
 
@@ -136,8 +146,8 @@ namespace TwitterCloneApi.Controllers
 
         public class RegistrationModel
         {
-            public User User { get; set; }  = new User();
-            public UserConfidentials UserConfidentials { get; set; } = new UserConfidentials();
+            public string username { get; set; } = "";
+            public string password { get; set; } = ""; 
         }
 
     }

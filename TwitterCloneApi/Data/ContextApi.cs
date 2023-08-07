@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using TwitterCloneApi.Models;
 
 namespace TwitterCloneApi.Data
@@ -17,5 +18,6 @@ namespace TwitterCloneApi.Data
 
         public DbSet<UserConfidentials> UserConfidentials { get; set;}
 
+ 
         }
 }   

@@ -21,7 +21,7 @@ namespace TwitterCloneApi.Controllers
         }
          
         [HttpGet]
-        [Route("jwt/GetAllTweetByDate")]
+        [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
         {   
             List<Tweet> tweets = await contextApi.Tweet.Include(t => t.Author).OrderByDescending(t => t.CreatedAt).ToListAsync();
@@ -44,10 +44,12 @@ namespace TwitterCloneApi.Controllers
 
 
             //to be finished : implement auth controllers
-            User dummy = new User();
-            dummy.Username = "test";
-            dummy.Email = "test";
-            dummy.Id = Guid.NewGuid().ToString();
+            User dummy = new User
+            { 
+                Username = "test",
+                Email = "test",
+                Id = Guid.NewGuid().ToString()
+            }; 
             tweet.Author = dummy;
             if (await contextApi.Tweet.FindAsync("test") != null)
             {
