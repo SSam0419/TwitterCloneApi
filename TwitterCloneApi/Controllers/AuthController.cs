@@ -31,20 +31,20 @@ namespace TwitterCloneApi.Controllers
          
         [Route("sign_in")]
         [HttpPost]
-        public async Task<IActionResult> SignIn([FromBody] UserConfidentials userConfidentials)
+        public async Task<IActionResult> SignIn([FromBody] RegistrationModel registrationModel)
         {
-            UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u => u.Username == userConfidentials.Username);
+ 
+            UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u => u.Username == registrationModel.username);
             if (user == null)
             {
                 return NotFound();
             }
             else
-            {
+            { 
 
-                string hashedEnteredPassword = BCrypt.Net.BCrypt.HashPassword(user.Password, user.Salt);
+                bool check = BCrypt.Net.BCrypt.Verify(registrationModel.password, user.Password);
 
-
-                if (!BCrypt.Net.BCrypt.Verify(user.Password, hashedEnteredPassword))
+                if (!check)
                 {
                     return BadRequest("Incorrec Pasword");
                 }
@@ -55,7 +55,7 @@ namespace TwitterCloneApi.Controllers
                 Response.Cookies.Append("access_token", accessToken, tokenService.cookieOptions);
                 Response.Cookies.Append("refresh_token", refreshToken, tokenService.cookieOptions);
 
-                return Ok(await contextApi.User.FirstOrDefaultAsync(u => u.Username == userConfidentials.Username));    
+                return Ok(await contextApi.User.FirstOrDefaultAsync(u => u.Username == registrationModel.username));    
             }
         }
 
@@ -73,7 +73,7 @@ namespace TwitterCloneApi.Controllers
                 try
                 { 
                     string newId = Guid.NewGuid().ToString();
-                    User newUser = new User{ Email = registrationModel.username ,Followers = { },IconLink ="",Id = newId, }; 
+                    User newUser = new User{ Email = registrationModel.username , Username = registrationModel.username, Followers = { },IconLink ="",Id = newId, }; 
                     UserConfidentials newUserConfidentials = new UserConfidentials{ 
                         Id= newId, 
                         Username=registrationModel.username,
@@ -81,8 +81,8 @@ namespace TwitterCloneApi.Controllers
                         User=newUser }; 
  
 
-                    string salt = BCrypt.Net.BCrypt.GenerateSalt(1);
-                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.password, salt);
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt();
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.password);
                     newUserConfidentials.Password = hashedPassword;
                     newUserConfidentials.Salt = salt;
 
@@ -139,8 +139,7 @@ namespace TwitterCloneApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-            return BadRequest();
+            } 
             }
  
 

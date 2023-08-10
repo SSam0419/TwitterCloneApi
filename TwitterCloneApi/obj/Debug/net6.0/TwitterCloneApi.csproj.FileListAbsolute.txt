@@ -88,7 +88,6 @@ E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Sys
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Composition.Runtime.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Composition.TypedParts.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
-E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Drawing.Common.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Reflection.MetadataLoadContext.dll
@@ -493,3 +492,18 @@ C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\TwitterCloneApi
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\ref\TwitterCloneApi.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\BCrypt.Net-Next.dll
 E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.Caching.Abstractions.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Abstractions.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.Logging.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Npgsql.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Mono.TextTemplating.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.CodeDom.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\System.Text.Json.dll
+E:\Users\leemi\source\repos\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll

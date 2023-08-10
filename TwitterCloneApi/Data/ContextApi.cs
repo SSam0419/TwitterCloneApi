@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore; 
 using TwitterCloneApi.Models;
 
 namespace TwitterCloneApi.Data

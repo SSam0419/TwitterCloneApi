@@ -32,7 +32,8 @@ namespace TwitterCloneApi.Services
         public TokenService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["jwt:Key"]));
+            string key = configuration["Jwt:Key"];
+            SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
             tokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,

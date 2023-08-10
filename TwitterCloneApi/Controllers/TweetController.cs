@@ -19,7 +19,8 @@ namespace TwitterCloneApi.Controllers
         {
             this.contextApi = contextApi;
         }
-         
+
+        [Authorize] 
         [HttpGet]
         [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
