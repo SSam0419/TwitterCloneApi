@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TwitterCloneApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,10 +17,10 @@ namespace TwitterCloneApi.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
-                    AuthorId = table.Column<string>(type: "text", nullable: true),
+                    AuthorId = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TweetId = table.Column<string>(type: "text", nullable: false)
+                    TweetId = table.Column<string>(type: "character varying(30)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,12 +31,12 @@ namespace TwitterCloneApi.Migrations
                 name: "Tweet",
                 columns: table => new
                 {
-                    TweetId = table.Column<string>(type: "text", nullable: false),
+                    TweetId = table.Column<string>(type: "character varying(30)", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AuthorId = table.Column<string>(type: "text", nullable: true)
+                    AuthorId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,13 +47,13 @@ namespace TwitterCloneApi.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Username = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Email = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     IconLink = table.Column<string>(type: "text", nullable: true),
                     CommentId = table.Column<string>(type: "text", nullable: true),
-                    TweetId = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: true)
+                    TweetId = table.Column<string>(type: "character varying(30)", nullable: true),
+                    UserId = table.Column<string>(type: "character varying(30)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,11 +79,11 @@ namespace TwitterCloneApi.Migrations
                 name: "UserConfidentials",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Salt = table.Column<string>(type: "text", nullable: false),
-                    RefreshToken = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<string>(type: "character varying(30)", nullable: false),
+                    Username = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Password = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Salt = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
+                    RefreshToken = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,19 +97,9 @@ namespace TwitterCloneApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_AuthorId",
-                table: "Comment",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Comment_TweetId",
                 table: "Comment",
                 column: "TweetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tweet_AuthorId",
-                table: "Tweet",
-                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_CommentId",
@@ -135,18 +125,12 @@ namespace TwitterCloneApi.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Comment_User_AuthorId",
-                table: "Comment",
-                column: "AuthorId",
-                principalTable: "User",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Tweet_User_AuthorId",
+                name: "FK_Tweet_User_TweetId",
                 table: "Tweet",
-                column: "AuthorId",
+                column: "TweetId",
                 principalTable: "User",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
@@ -159,10 +143,6 @@ namespace TwitterCloneApi.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_User_Tweet_TweetId",
                 table: "User");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Comment_User_AuthorId",
-                table: "Comment");
 
             migrationBuilder.DropTable(
                 name: "UserConfidentials");

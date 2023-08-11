@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TwitterCloneApi.Data;
@@ -11,9 +12,11 @@ using TwitterCloneApi.Data;
 namespace TwitterCloneApi.Migrations
 {
     [DbContext(typeof(ContextApi))]
-    partial class ContextApiModelSnapshot : ModelSnapshot
+    [Migration("20230811093253_init6")]
+    partial class init6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,12 +131,17 @@ namespace TwitterCloneApi.Migrations
                     b.Property<string>("IconLink")
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("character varying(30)");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("User");
                 });
@@ -164,36 +172,6 @@ namespace TwitterCloneApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserConfidentials");
-                });
-
-            modelBuilder.Entity("TwitterCloneApi.Models.UserFollowed", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("FollowedUserId")
-                        .HasColumnType("character varying(30)");
-
-                    b.HasKey("UserId", "FollowedUserId");
-
-                    b.HasIndex("FollowedUserId");
-
-                    b.ToTable("UserFollowed");
-                });
-
-            modelBuilder.Entity("TwitterCloneApi.Models.UserFollowings", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("FollowingUserId")
-                        .HasColumnType("character varying(30)");
-
-                    b.HasKey("UserId", "FollowingUserId");
-
-                    b.HasIndex("FollowingUserId");
-
-                    b.ToTable("UserFollowings");
                 });
 
             modelBuilder.Entity("CommentUser", b =>
@@ -256,6 +234,19 @@ namespace TwitterCloneApi.Migrations
                     b.Navigation("Author");
                 });
 
+            modelBuilder.Entity("TwitterCloneApi.Models.User", b =>
+                {
+                    b.HasOne("TwitterCloneApi.Models.User", null)
+                        .WithMany("UsersFollowedMe")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TwitterCloneApi.Models.User", null)
+                        .WithMany("MyFollowingUsers")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("TwitterCloneApi.Models.UserConfidentials", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "User")
@@ -267,44 +258,6 @@ namespace TwitterCloneApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TwitterCloneApi.Models.UserFollowed", b =>
-                {
-                    b.HasOne("TwitterCloneApi.Models.User", "FollowedUser")
-                        .WithMany()
-                        .HasForeignKey("FollowedUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TwitterCloneApi.Models.User", "User")
-                        .WithMany("Followed")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("FollowedUser");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TwitterCloneApi.Models.UserFollowings", b =>
-                {
-                    b.HasOne("TwitterCloneApi.Models.User", "FollowingUser")
-                        .WithMany()
-                        .HasForeignKey("FollowingUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TwitterCloneApi.Models.User", "User")
-                        .WithMany("Followings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("FollowingUser");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
                 {
                     b.Navigation("Comments");
@@ -312,12 +265,12 @@ namespace TwitterCloneApi.Migrations
 
             modelBuilder.Entity("TwitterCloneApi.Models.User", b =>
                 {
-                    b.Navigation("Followed");
-
-                    b.Navigation("Followings");
+                    b.Navigation("MyFollowingUsers");
 
                     b.Navigation("UserConfidentials")
                         .IsRequired();
+
+                    b.Navigation("UsersFollowedMe");
                 });
 #pragma warning restore 612, 618
         }

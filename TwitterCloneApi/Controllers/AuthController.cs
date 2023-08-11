@@ -54,7 +54,8 @@ namespace TwitterCloneApi.Controllers
  
                 Response.Cookies.Append("access_token", accessToken, tokenService.cookieOptions);
                 Response.Cookies.Append("refresh_token", refreshToken, tokenService.cookieOptions);
-
+                user.RefreshToken = refreshToken;
+                await contextApi.SaveChangesAsync();
                 return Ok(await contextApi.User.FirstOrDefaultAsync(u => u.Username == registrationModel.username));    
             }
         }
@@ -73,7 +74,7 @@ namespace TwitterCloneApi.Controllers
                 try
                 { 
                     string newId = Guid.NewGuid().ToString();
-                    User newUser = new User{ Email = registrationModel.username , Username = registrationModel.username, Followers = { },IconLink ="",Id = newId, }; 
+                    User newUser = new User{ Email = registrationModel.username , Username = registrationModel.username,IconLink ="",Id = newId, }; 
                     UserConfidentials newUserConfidentials = new UserConfidentials{ 
                         Id= newId, 
                         Username=registrationModel.username,

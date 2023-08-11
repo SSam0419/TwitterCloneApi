@@ -12,8 +12,8 @@ using TwitterCloneApi.Data;
 namespace TwitterCloneApi.Migrations
 {
     [DbContext(typeof(ContextApi))]
-    [Migration("20230810142112_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230811093702_init8")]
+    partial class init8
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,44 @@ namespace TwitterCloneApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CommentUser", b =>
+                {
+                    b.Property<string>("CommentId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LikesId")
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("CommentId", "LikesId");
+
+                    b.HasIndex("LikesId");
+
+                    b.ToTable("CommentUser");
+                });
+
+            modelBuilder.Entity("TweetUser", b =>
+                {
+                    b.Property<string>("LikesId")
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("TweetId")
+                        .HasColumnType("text");
+
+                    b.HasKey("LikesId", "TweetId");
+
+                    b.HasIndex("TweetId");
+
+                    b.ToTable("TweetUser");
+                });
+
             modelBuilder.Entity("TwitterCloneApi.Models.Comment", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorId")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -62,7 +93,8 @@ namespace TwitterCloneApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorId")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -88,35 +120,29 @@ namespace TwitterCloneApi.Migrations
             modelBuilder.Entity("TwitterCloneApi.Models.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CommentId")
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("IconLink")
                         .HasColumnType("text");
 
-                    b.Property<string>("TweetId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("_UserId")
+                        .IsRequired()
+                        .HasColumnType("character varying(30)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("TweetId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("_UserId");
 
                     b.ToTable("User");
                 });
@@ -124,95 +150,132 @@ namespace TwitterCloneApi.Migrations
             modelBuilder.Entity("TwitterCloneApi.Models.UserConfidentials", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Salt")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.HasKey("Id");
 
                     b.ToTable("UserConfidentials");
                 });
 
+            modelBuilder.Entity("CommentUser", b =>
+                {
+                    b.HasOne("TwitterCloneApi.Models.Comment", null)
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TwitterCloneApi.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("LikesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TweetUser", b =>
+                {
+                    b.HasOne("TwitterCloneApi.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("LikesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TwitterCloneApi.Models.Tweet", null)
+                        .WithMany()
+                        .HasForeignKey("TweetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TwitterCloneApi.Models.Comment", b =>
                 {
-                    b.HasOne("TwitterCloneApi.Models.User", "Author")
+                    b.HasOne("TwitterCloneApi.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.Tweet", "Tweet")
-                        .WithMany("Comment")
+                        .WithMany("Comments")
                         .HasForeignKey("TweetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
-
                     b.Navigation("Tweet");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.User", b =>
                 {
-                    b.HasOne("TwitterCloneApi.Models.Comment", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("CommentId");
-
-                    b.HasOne("TwitterCloneApi.Models.Tweet", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("TweetId");
-
                     b.HasOne("TwitterCloneApi.Models.User", null)
-                        .WithMany("Followers")
-                        .HasForeignKey("UserId");
+                        .WithMany("UsersFollowedMe")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TwitterCloneApi.Models.User", "_User")
+                        .WithMany("MyFollowingUsers")
+                        .HasForeignKey("_UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("_User");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.UserConfidentials", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
+                        .WithOne("UserConfidentials")
+                        .HasForeignKey("TwitterCloneApi.Models.UserConfidentials", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TwitterCloneApi.Models.Comment", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
                 {
-                    b.Navigation("Comment");
-
-                    b.Navigation("Likes");
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.User", b =>
                 {
-                    b.Navigation("Followers");
+                    b.Navigation("MyFollowingUsers");
+
+                    b.Navigation("UserConfidentials")
+                        .IsRequired();
+
+                    b.Navigation("UsersFollowedMe");
                 });
 #pragma warning restore 612, 618
         }

@@ -16,7 +16,7 @@ namespace TwitterCloneApi.Services
     {
 
 
-        public static readonly int AccessTokenExpirationMinutes = 15;
+        public static readonly double AccessTokenExpirationMinutes = 0.15;
         public static readonly int RefreshTokenExpirationMinutes = 60 * 24 * 3;
         public readonly CookieOptions cookieOptions = new CookieOptions
                         {
@@ -32,7 +32,7 @@ namespace TwitterCloneApi.Services
         public TokenService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            string key = configuration["Jwt:Key"];
+            string key = this.configuration["Jwt:Key"];
             SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
             tokenValidationParameters = new TokenValidationParameters
                 {
@@ -43,6 +43,8 @@ namespace TwitterCloneApi.Services
                     ClockSkew = TimeSpan.Zero
                 };
         }
+
+      
 
         public string GenerateAccessToken(string userId)
         {

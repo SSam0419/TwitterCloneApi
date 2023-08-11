@@ -10,6 +10,7 @@ using TwitterCloneApi.Services;
 
 namespace TwitterCloneApi.Middlewares
 {
+
     public class JwtCookieMiddleware
     {
         private readonly RequestDelegate _next;
