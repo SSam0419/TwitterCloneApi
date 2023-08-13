@@ -13,7 +13,7 @@ namespace TwitterCloneApi.Data
         public DbSet<Tweet> Tweet { get; set; }
 
         public DbSet<User> User { get; set; }
-
+        public DbSet<UserFollowings> UserFollowings { get; set; } 
         public DbSet<Comment> Comment { get; set; }
 
         public DbSet<UserConfidentials> UserConfidentials { get; set;}
@@ -27,35 +27,20 @@ namespace TwitterCloneApi.Data
                 .HasForeignKey<UserConfidentials>(uc => uc.Id);
 
             modelBuilder.Entity<UserFollowings>()
-                .HasKey(uf => new { uf.UserId, uf.FollowingUserId });
-
-            modelBuilder.Entity<UserFollowed>()
-                .HasKey(uf => new { uf.UserId, uf.FollowedUserId });
+                .HasKey(uf => new { uf.FromUserId, uf.ToUserId });
+             
 
             modelBuilder.Entity<UserFollowings>()
                .HasOne(uf => uf.User)
                .WithMany(u => u.Followings)
-               .HasForeignKey(uf => uf.UserId)
+               .HasForeignKey(uf => uf.FromUserId)
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserFollowings>()
                 .HasOne(uf => uf.FollowingUser)
                 .WithMany()
-                .HasForeignKey(uf => uf.FollowingUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<UserFollowed>()
-                .HasOne(uf => uf.User)
-                .WithMany(u => u.Followed)
-                .HasForeignKey(uf => uf.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<UserFollowed>()
-                .HasOne(uf => uf.FollowedUser)
-                .WithMany()
-                .HasForeignKey(uf => uf.FollowedUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+                .HasForeignKey(uf => uf.ToUserId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
 
             //comment

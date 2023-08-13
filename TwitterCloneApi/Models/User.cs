@@ -18,31 +18,19 @@ namespace TwitterCloneApi.Models
 
         public UserConfidentials UserConfidentials { get; set; } = null!;
         // Navigation properties
-        public ICollection<UserFollowings> Followings { get; set; } = new List<UserFollowings>();
-        public ICollection<UserFollowed> Followed { get; set; } = new List<UserFollowed>();
+        public ICollection<UserFollowings> Followings { get; set; } = new List<UserFollowings>(); 
     }
 
     public class UserFollowings
     {
-        public string UserId { get; set; }
-        public string FollowingUserId { get; set; }
+        public string FromUserId { get; set; }
+        public string ToUserId { get; set; }
 
         // Navigation properties
         public User User { get; set; }
         public User FollowingUser { get; set; }
     }
-
-    public class UserFollowed
-    {
-        public string UserId { get; set; }
-        public string FollowedUserId { get; set; }
-
-        // Navigation properties
-        public User User { get; set; }
-        public User FollowedUser { get; set; }
-    }
-
-
+     
     public class UserConfidentials
     {
 

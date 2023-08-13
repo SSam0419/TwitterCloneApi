@@ -34,6 +34,17 @@ builder.Services.AddDbContext<ContextApi>(options =>
 }
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CORS",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                      });
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -118,16 +129,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "CORS",
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod(); 
-                      });
-}); 
+
 
 var app = builder.Build();
 

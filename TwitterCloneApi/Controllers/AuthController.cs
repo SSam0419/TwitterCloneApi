@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
@@ -100,10 +101,37 @@ namespace TwitterCloneApi.Controllers
             } 
         }
 
-        [Route("access_token")]
-        [HttpPost]
-        public async Task<IActionResult> AccessToken([FromBody] string accessToken)
+        [Authorize]
+        [Route("log_out")]
+        public async Task<IActionResult> Logout([FromBody] string userId)
         {
+            //delete tokens from client's cookie
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+
+            //delete tokens from database
+            UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u=> u.Id == userId);
+            if (user == null)
+            {
+                return BadRequest("Invalid User Id");
+            }
+
+            user.RefreshToken = "";
+            await contextApi.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [Route("access_token")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> AccessToken()
+        {
+            string? accessToken = HttpContext.Request.Cookies["access_token"];
+            if (accessToken == "" || accessToken == null)
+            {
+                return BadRequest("Invalid Token/Missing Token");
+            }
             JwtSecurityToken decodeToken = tokenService.DecodeToken(accessToken);
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             string? userId = decodeToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
