@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Primitives;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TwitterCloneApi.Models
 {
@@ -15,9 +16,12 @@ namespace TwitterCloneApi.Models
 
         //Foreign Key 
         public string AuthorId { get; set; }
-        public User User { get; set; }
         public string TweetId { get; set; }
+        [JsonIgnore]
+        public User User { get; set; }
+        [JsonIgnore]
         public Tweet Tweet { get; set; }
+        [JsonIgnore]
         public ICollection<User> Likes { get; set; } = new List<User>();
     } 
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TwitterCloneApi.Data;
 using TwitterCloneApi.Models;
+using TwitterCloneApi.Services;
 using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,18 +15,27 @@ namespace TwitterCloneApi.Controllers
     public class TweetController : ControllerBase
     {
         private readonly ContextApi contextApi;
+        private readonly TokenService tokenService;
 
-        public TweetController(ContextApi contextApi)
+        public TweetController(ContextApi contextApi, TokenService tokenService)
         {
             this.contextApi = contextApi;
+            this.tokenService = tokenService;
         }
 
-        [Authorize] 
+ 
         [HttpGet]
         [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
-        {   
-            List<Tweet> tweets = await contextApi.Tweet.Include(t => t.Author).OrderByDescending(t => t.CreatedAt).ToListAsync();
+        {
+            List<Tweet> tweets = await contextApi.Tweet
+             .Join(contextApi.User,
+                 t => t.AuthorId,
+                 u => u.Id,
+                 (tweet, user) => new { Tweet = tweet, Author = user })
+             .OrderByDescending(t => t.Tweet.CreatedAt)
+             .Select(t => t.Tweet)
+             .ToListAsync();
             return Ok(tweets);
         }
          
@@ -37,32 +47,52 @@ namespace TwitterCloneApi.Controllers
             return Ok(tweets);
         }
 
+
+        public class AddTweetBody
+        {
+            public string tweetContent { get; set; } = "";
+        }
+
+        [Authorize]
         [HttpPost]
         [Route("AddTweet")]
-        public async Task<IActionResult> AddTweet([FromBody] Tweet tweet)
-        {
-            tweet.TweetId = Guid.NewGuid().ToString();
-
-
-            //to be finished : implement auth controllers
-            User dummy = new User
-            { 
-                Username = "test",
-                Email = "test",
-                Id = Guid.NewGuid().ToString()
-            }; 
-            tweet.Author = dummy;
-            if (await contextApi.Tweet.FindAsync("test") != null)
+        public async Task<IActionResult> AddTweet([FromBody] AddTweetBody addTweetBody)
+        { 
+            
+            Request.Cookies.TryGetValue("access_token", out var cookie); 
+            if (cookie != null)
             {
-                await contextApi.User.AddAsync(dummy);
-            }
-            //end
+                
+                string? authorId = tokenService.DecodeToken(cookie).Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
 
-            await contextApi.Tweet.AddAsync(tweet);
+                if (await contextApi.User.FindAsync(authorId) == null || authorId == null)
+                {
+                    return BadRequest("Author Not Found");
+                }
+                string tweetContent = addTweetBody.tweetContent;
+                Tweet newTweet = new Tweet { 
+                    TweetId = Guid.NewGuid().ToString(),
+                    Content = tweetContent ,
+                    AuthorId = authorId,
+                    CreatedAt = DateTime.Now.ToUniversalTime(),
+                    UpdatedAt = DateTime.Now.ToUniversalTime(),
+                    Title = tweetContent,
+                };
+                try
+                {
+                    await contextApi.Tweet.AddAsync(newTweet);
              
-            await contextApi.SaveChangesAsync();
+                    await contextApi.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
              
-            return Ok(tweet);
+                return Ok(newTweet);
+            }
+
+            return BadRequest("Author Not Found");
         }
 
         [HttpPut]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
@@ -56,7 +57,8 @@ namespace TwitterCloneApi.Controllers
                 Response.Cookies.Append("refresh_token", refreshToken, tokenService.cookieOptions);
                 user.RefreshToken = refreshToken;
                 await contextApi.SaveChangesAsync();
-                return Ok(await contextApi.User.FirstOrDefaultAsync(u => u.Username == registrationModel.username));    
+                User signedUser = await contextApi.User.FirstOrDefaultAsync(u => u.Username == registrationModel.username);
+                return Ok(signedUser);    
             }
         }
 
@@ -100,10 +102,37 @@ namespace TwitterCloneApi.Controllers
             } 
         }
 
-        [Route("access_token")]
-        [HttpPost]
-        public async Task<IActionResult> AccessToken([FromBody] string accessToken)
+        [Authorize]
+        [Route("log_out")]
+        public async Task<IActionResult> Logout([FromBody] string userId)
         {
+            //delete tokens from client's cookie
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+
+            //delete tokens from database
+            UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u=> u.Id == userId);
+            if (user == null)
+            {
+                return BadRequest("Invalid User Id");
+            }
+
+            user.RefreshToken = "";
+            await contextApi.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [Route("access_token")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> AccessToken()
+        {
+            string? accessToken = HttpContext.Request.Cookies["access_token"];
+            if (accessToken == "" || accessToken == null)
+            {
+                return BadRequest("Invalid Token/Missing Token");
+            }
             JwtSecurityToken decodeToken = tokenService.DecodeToken(accessToken);
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             string? userId = decodeToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
@@ -114,22 +143,6 @@ namespace TwitterCloneApi.Controllers
                 {
                     User? profile = await contextApi.User.FindAsync(userId);
                     return Ok(profile);
-                }
-
-                else if (tokenResult == JwtValidationResult.Expired)
-                {
-                    if (userId != null)
-                    {
-                        string newAccessToken = tokenService.GenerateAccessToken(userId);
-                        string newRefreshToken = tokenService.GenerateRefreshToken(userId);
-
-                        HttpContext.Response.Cookies.Append("access_token", accessToken, tokenService.cookieOptions);
-                        HttpContext.Response.Cookies.Append("refresh_token", newRefreshToken, tokenService.cookieOptions);
-                        User? profile = await contextApi.User.FindAsync(userId);
-                        return Ok(profile);
-                    }
-                    return BadRequest("Token decoded does not have valid user id.");
-
                 }
                 else  
                 { 

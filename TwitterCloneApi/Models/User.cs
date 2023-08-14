@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace TwitterCloneApi.Models
 {
@@ -12,40 +13,32 @@ namespace TwitterCloneApi.Models
         public string Email { get; set; } = ""; 
         public string? IconLink {   get; set; }
         //foreign key          
-
+        [JsonIgnore]
         public UserConfidentials UserConfidentials { get; set; } = null!;
+        [JsonIgnore]
         // Navigation properties
-        public ICollection<UserFollowings> Followings { get; set; } = new List<UserFollowings>();
-        public ICollection<UserFollowed> Followed { get; set; } = new List<UserFollowed>();
+        public ICollection<UserFollowings> ToFollowings { get; set; } = new List<UserFollowings>();
+        [JsonIgnore]
+        public ICollection<UserFollowings> FromFollowings { get; set; } = new List<UserFollowings>();  
     }
 
     public class UserFollowings
     {
-        public string UserId { get; set; }
-        public string FollowingUserId { get; set; }
+        public string FromUserId { get; set; }
+        public string ToUserId { get; set; }
 
         // Navigation properties
-        public User User { get; set; }
-        public User FollowingUser { get; set; }
+        [JsonIgnore]
+        public User FromUser { get; set; }
+        [JsonIgnore]
+        public User ToUser { get; set; } 
     }
-
-    public class UserFollowed
-    {
-        public string UserId { get; set; }
-        public string FollowedUserId { get; set; }
-
-        // Navigation properties
-        public User User { get; set; }
-        public User FollowedUser { get; set; }
-    }
-
-
+     
     public class UserConfidentials
     {
 
         [ForeignKey("User")]
         public string Id { get; set; } = "";
-        public User User { get; set; } = null!;
 
         public string Username { get; set; } = "";
 
@@ -53,7 +46,11 @@ namespace TwitterCloneApi.Models
 
         public string? Salt { get; set; } = "";
 
-        public string? RefreshToken { get; set; } 
+        public string? RefreshToken { get; set; }
+
+        //navigation propeties
+        [JsonIgnore]
+        public User User { get; set; } = null!;
 
     }
 }

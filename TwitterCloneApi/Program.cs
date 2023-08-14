@@ -15,6 +15,9 @@ using System.Security.Claims;
 using NuGet.Protocol;
 using NuGet.Common;
 using TwitterCloneApi.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,20 @@ builder.Services.AddDbContext<ContextApi>(options =>
 }
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CORS",
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                      });
+});
+
+ 
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -51,11 +68,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 var token = context.Request.Cookies["access_token"];
                 context.Token = token;
-                return Task.CompletedTask;
-            },
+                return Task.CompletedTask;  
+            }
+            ,
+
             OnAuthenticationFailed = async context =>
             {
-                context.Response.StatusCode = 403; // Set the status code to 403 Forbidden for expired tokens 
+                context.Response.StatusCode = 402;
                 if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                 {
                     TokenValidationParameters p = new TokenValidationParameters
@@ -86,22 +105,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                             UserConfidentials? userConfidentials = await contextApi.UserConfidentials.FindAsync(nameId);
                             if (userConfidentials != null)
                             {
-                                if (userConfidentials.RefreshToken == refreshToken)
-                                {
-                                    string newRefreshToken = t.GenerateRefreshToken(nameId);
-                                    string newAccessToken = t.GenerateAccessToken(nameId);
+                                string newRefreshToken = t.GenerateRefreshToken(nameId);
+                                string newAccessToken = t.GenerateAccessToken(nameId);
 
-                                    context.Response.Cookies.Append("refresh_token", newRefreshToken);
-                                    context.Response.Cookies.Append("access_token", newAccessToken);
+                                context.Response.Cookies.Append("refresh_token", " ");
+                                context.Response.Cookies.Append("access_token", " ");
 
-                                    userConfidentials.RefreshToken = newRefreshToken;
-                                    await contextApi.SaveChangesAsync(); 
-                                    context.Principal = principal;
-                                    context.Response.StatusCode = 200; // Set the status code to 200 OK if the refresh token is valid
-                                    context.Success();
-                                }
+                                userConfidentials.RefreshToken = newRefreshToken;
+                                await contextApi.SaveChangesAsync();
+                                context.Principal = principal;
+                                context.Response.StatusCode = 200; // Set the status code to 200 OK if the refresh token is valid
+                                context.Success();
                             }
-                        } 
+                        }
                     }
                     else
                     {
@@ -109,25 +125,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         context.Fail(context.Exception);
                     }
                 }
-               // return Task.CompletedTask;
+                await Task.CompletedTask;
             }
-
-         
         };
     });
 
 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "CORS",
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod(); 
-                      });
-}); 
+
 
 var app = builder.Build();
 
@@ -145,7 +150,7 @@ app.UseCors("CORS");
 app.UseHttpsRedirection(); 
 
 app.MapControllers();
-
+ 
 app.UseAuthentication();
 
 app.UseAuthorization();
