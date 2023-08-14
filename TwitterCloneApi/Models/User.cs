@@ -1,36 +1,56 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace TwitterCloneApi.Models
 {
     public class User
     {
-        [StringLength(30)]
+        [Key]
         public string Id { get; set; } = "";
-        [StringLength(30)]
         public string Username { get; set; } = "";
-        [StringLength(30)]
-        public string Email { get; set; } = "";
-        [StringLength(50)]
+        public string Email { get; set; } = ""; 
         public string? IconLink {   get; set; }
-     
-        public List<User>? Followers { get; set; } 
+        //foreign key          
+        [JsonIgnore]
+        public UserConfidentials UserConfidentials { get; set; } = null!;
+        [JsonIgnore]
+        // Navigation properties
+        public ICollection<UserFollowings> ToFollowings { get; set; } = new List<UserFollowings>();
+        [JsonIgnore]
+        public ICollection<UserFollowings> FromFollowings { get; set; } = new List<UserFollowings>();  
     }
-  public class UserConfidentials
+
+    public class UserFollowings
     {
-        [Key, ForeignKey("User")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [StringLength(30)]
+        public string FromUserId { get; set; }
+        public string ToUserId { get; set; }
+
+        // Navigation properties
+        [JsonIgnore]
+        public User FromUser { get; set; }
+        [JsonIgnore]
+        public User ToUser { get; set; } 
+    }
+     
+    public class UserConfidentials
+    {
+
+        [ForeignKey("User")]
         public string Id { get; set; } = "";
-        [StringLength(30)]
+
         public string Username { get; set; } = "";
-        [StringLength(30)]
+
         public string Password { get; set; } = "";
-        [StringLength(30)]
-        public string Salt { get; set; } = "";
-        [StringLength(30)]
+
+        public string? Salt { get; set; } = "";
+
         public string? RefreshToken { get; set; }
-        public User? User { get; set; } = new User();
+
+        //navigation propeties
+        [JsonIgnore]
+        public User User { get; set; } = null!;
+
     }
 }

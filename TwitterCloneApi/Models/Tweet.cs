@@ -1,22 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TwitterCloneApi.Models
 {
     public class Tweet
     {
-        public string  TweetId { get; set;}
+        [Key]
+        public string TweetId { get; set; } 
         public string Content { get; set; }
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
 
-        public User? Author { get; set; }
 
-        public List<Comment>? Comment { get; set; }
+        //Foriegn Keys
+        public string AuthorId { get; set; }
+        [JsonIgnore]
+        public User Author { get; set; } = null!;
+        [JsonIgnore]
 
-        public List<User>? Likes { get; set; }
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        [JsonIgnore]
+
+        public ICollection<User> Likes { get; set; } = new List<User>();
 
   
     }
+
+ 
 }

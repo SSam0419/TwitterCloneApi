@@ -10,6 +10,14 @@ using TwitterCloneApi.Services;
 using Npgsql;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using NuGet.Protocol;
+using NuGet.Common;
+using TwitterCloneApi.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,43 +30,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {  
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["jwt:Key"])),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero
-        };
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var token = context.Request.Cookies["access_token"];
-                context.Token = token;
-                return Task.CompletedTask;
-            },
-            OnAuthenticationFailed = context =>
-            {
-                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                {
-                    context.Response.StatusCode = 403; // Set the status code to 403 Forbidden for expired tokens
-                }
-                return Task.CompletedTask;
-            }
-        };
-    });
-
 builder.Services.AddDbContext<ContextApi>(options =>
-{  
+{
     //options.UseSqlServer(builder.Configuration.GetConnectionString("TwitterCloneApiContext"));
     options.UseNpgsql(builder.Configuration.GetConnectionString("TwitterCloneApiContext"));
 }
-
-
 );
 
 builder.Services.AddCors(options =>
@@ -66,11 +42,95 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CORS",
                       policy =>
                       {
-                          policy.AllowAnyOrigin()
+                          policy.WithOrigins("http://localhost:5173")
                             .AllowAnyHeader()
-                            .AllowAnyMethod(); 
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                       });
-}); 
+});
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuerSigningKey = true,
+//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["jwt:Key"])),
+//            ValidateIssuer = false,
+//            ValidateAudience = false,
+//            ClockSkew = TimeSpan.Zero
+//        };
+//        options.Events = new JwtBearerEvents
+//        {
+//            OnMessageReceived = context =>
+//            {
+//                var token = context.Request.Cookies["access_token"];
+//                context.Token = token;
+//                return Task.CompletedTask;  
+//            }
+//            ,
+
+//            OnAuthenticationFailed = async context =>
+//            {
+//                context.Response.StatusCode = 402;
+//                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+//                {
+//                    TokenValidationParameters p = new TokenValidationParameters
+//                    {
+//                        ValidateIssuerSigningKey = true,
+//                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["jwt:Key"])),
+//                        ValidateIssuer = false,
+//                        ValidateAudience = false,
+//                        ClockSkew = TimeSpan.Zero
+//                    };
+//                    TokenService t = new TokenService(builder.Configuration);
+//                    var tokenHandler = new JwtSecurityTokenHandler();
+//                    string? refreshToken = context.Request.Cookies["refresh_token"];
+//                    if (refreshToken != null)
+//                    {
+//                        JwtValidationResult res = t.ValidateToken(refreshToken);
+//                        if (res == JwtValidationResult.Valid)
+//                        {
+//                            string? nameId = t.DecodeToken(refreshToken).Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+//                            if (nameId == null || nameId == "")
+//                            {
+//                                return;
+//                            }
+//                            var identity = new ClaimsIdentity(nameId);
+//                            var principal = new ClaimsPrincipal(identity);
+//                            ContextApi contextApi = new ContextApi(builder.Services.BuildServiceProvider().GetRequiredService<DbContextOptions<ContextApi>>());
+
+//                            UserConfidentials? userConfidentials = await contextApi.UserConfidentials.FindAsync(nameId);
+//                            if (userConfidentials != null)
+//                            {
+//                                string newRefreshToken = t.GenerateRefreshToken(nameId);
+//                                string newAccessToken = t.GenerateAccessToken(nameId);
+
+//                                context.Response.Cookies.Append("refresh_token", " ");
+//                                context.Response.Cookies.Append("access_token", " ");
+
+//                                userConfidentials.RefreshToken = newRefreshToken;
+//                                await contextApi.SaveChangesAsync();
+//                                context.Principal = principal;
+//                                context.Response.StatusCode = 200; // Set the status code to 200 OK if the refresh token is valid
+//                                context.Success();
+//                            }
+//                        }
+//                    }
+//                    else
+//                    {
+//                        context.Response.StatusCode = 401; // Set the status code to 401 Unauthorized for other authentication failures
+//                        context.Fail(context.Exception);
+//                    }
+//                }
+//                await Task.CompletedTask;
+//            }
+//        };
+//    });
+
+
+
+
 
 var app = builder.Build();
 
@@ -81,23 +141,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseRouting(); 
-
+app.UseRouting();
 app.UseCors("CORS");
+
+var protectedRoutes = new List<string>
+{
+    "/api/Auth/access_token", 
+};
+app.UseWhen(context => protectedRoutes.Contains(context.Request.Path), applicationBuilder =>
+{ 
+    applicationBuilder.UseMiddleware<JwtCookieMiddleware>();
+});
+
 
 app.UseHttpsRedirection(); 
 
 app.MapControllers();
-
+ 
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-app.UseWhen(context => context.Request.Path.ToString().Contains("jwt"),
-    builder =>
-    {
-        builder.UseMiddleware<JwtCookieMiddleware>();
-    });
 
 app.Run();
  
