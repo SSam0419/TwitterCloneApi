@@ -124,8 +124,7 @@ namespace TwitterCloneApi.Controllers
         }
 
         [Route("access_token")]
-        [HttpGet]
-        [Authorize]
+        [HttpGet] 
         public async Task<IActionResult> AccessToken()
         {
             string? accessToken = HttpContext.Request.Cookies["access_token"];
