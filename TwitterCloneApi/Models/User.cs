@@ -7,11 +7,8 @@ namespace TwitterCloneApi.Models
     public class User
     {
         [Key]
-        [StringLength(30)]
         public string Id { get; set; } = "";
-        [StringLength(30)]
         public string Username { get; set; } = "";
-        [StringLength(30)]
         public string Email { get; set; } = ""; 
         public string? IconLink {   get; set; }
         //foreign key          
@@ -50,16 +47,12 @@ namespace TwitterCloneApi.Models
         public string Id { get; set; } = "";
         public User User { get; set; } = null!;
 
-        [StringLength(30)]
         public string Username { get; set; } = "";
 
-        [StringLength(30)]
         public string Password { get; set; } = "";
 
-        [StringLength(30)]
         public string? Salt { get; set; } = "";
 
-        [StringLength(30)]
         public string? RefreshToken { get; set; } 
 
     }

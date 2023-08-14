@@ -83,7 +83,7 @@ namespace TwitterCloneApi.Controllers
  
 
                     string salt = BCrypt.Net.BCrypt.GenerateSalt();
-                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.password);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.password,salt);
                     newUserConfidentials.Password = hashedPassword;
                     newUserConfidentials.Salt = salt;
 
