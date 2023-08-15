@@ -16,7 +16,7 @@ namespace TwitterCloneApi.Services
     {
 
 
-        public static readonly double AccessTokenExpirationMinutes = 0.15;
+        public static readonly double AccessTokenExpirationMinutes = 1;
         public static readonly int RefreshTokenExpirationMinutes = 60 * 24 * 3;
         public readonly CookieOptions cookieOptions = new CookieOptions
                         {

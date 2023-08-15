@@ -33,16 +33,15 @@ namespace TwitterCloneApi.Middlewares
 
             if (!string.IsNullOrEmpty(token))
             {
-                JwtSecurityToken decodeToken = tokenService.DecodeToken(token);
-                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                string? userId = decodeToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
                 try
                 {
+                    JwtSecurityToken decodeToken = tokenService.DecodeToken(token);
+                    JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                    string? userId = decodeToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
                     JwtValidationResult tokenResult = tokenService.ValidateToken(token);
                     if (tokenResult == JwtValidationResult.Valid)
                     {
-                        User? profile = await _contextApi.User.FindAsync(userId);
-                        context.Items.Add("UserProfile", profile);
+                        context.Items["access_token"] = token;
                         await _next(context);
                     }
                     
@@ -50,13 +49,12 @@ namespace TwitterCloneApi.Middlewares
                     {
                         if (userId != null)
                         { 
-                            string accessToken = tokenService.GenerateAccessToken(userId);
+                            string newAccessToken = tokenService.GenerateAccessToken(userId);
                             string newRefreshToken = tokenService.GenerateRefreshToken(userId);
                             // Set the new tokens in the response cookies
-                            context.Response.Cookies.Append("access_token", accessToken,tokenService.cookieOptions);
+                            context.Response.Cookies.Append("access_token", newAccessToken, tokenService.cookieOptions);
                             context.Response.Cookies.Append("refresh_token", newRefreshToken, tokenService.cookieOptions);
-                            User? profile = await _contextApi.User.FindAsync(userId);
-                            context.Items.Add("UserProfile", profile);
+                            context.Items["access_token"] = newAccessToken;
                             await _next(context); 
                         }
 

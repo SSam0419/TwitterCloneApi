@@ -19,7 +19,11 @@ namespace TwitterCloneApi.Models
         // Navigation properties
         public ICollection<UserFollowings> ToFollowings { get; set; } = new List<UserFollowings>();
         [JsonIgnore]
-        public ICollection<UserFollowings> FromFollowings { get; set; } = new List<UserFollowings>();  
+        public ICollection<UserFollowings> FromFollowings { get; set; } = new List<UserFollowings>();
+        [JsonIgnore]
+        public ICollection<TweetLikes> TweetLikes { get; set; } = new List<TweetLikes>(); 
+        [JsonIgnore]
+        public ICollection<CommentLikes> CommentLikes { get; set; } = new List<CommentLikes>();
     }
 
     public class UserFollowings

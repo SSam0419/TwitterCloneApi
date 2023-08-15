@@ -12,7 +12,6 @@ namespace TwitterCloneApi.Models
         public string Content { get; set; }
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
-
         public DateTime UpdatedAt { get; set; }
 
 
@@ -21,13 +20,24 @@ namespace TwitterCloneApi.Models
         [JsonIgnore]
         public User Author { get; set; } = null!;
         [JsonIgnore]
-
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         [JsonIgnore]
-
-        public ICollection<User> Likes { get; set; } = new List<User>();
+        public ICollection<TweetLikes> Likes { get; set; } = new List<TweetLikes>();
 
   
+    }
+
+    public class TweetLikes
+    {
+        public string UserId { get; set; }
+        public string TweetId { get; set; }
+
+        //navigation properties
+        [JsonIgnore]
+        public User User { get; set; }
+        [JsonIgnore]
+        public Tweet Tweet { get; set; }
+    
     }
 
  

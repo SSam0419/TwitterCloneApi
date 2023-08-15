@@ -124,20 +124,21 @@ namespace TwitterCloneApi.Controllers
         }
 
         [Route("access_token")]
-        [HttpGet]
-        [Authorize]
+        [HttpGet] 
         public async Task<IActionResult> AccessToken()
-        {
-            string? accessToken = HttpContext.Request.Cookies["access_token"];
-            if (accessToken == "" || accessToken == null)
-            {
-                return BadRequest("Invalid Token/Missing Token");
-            }
-            JwtSecurityToken decodeToken = tokenService.DecodeToken(accessToken);
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            string? userId = decodeToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+        { 
             try
-            {
+            { 
+                string? accessToken = HttpContext.Items["access_token"]?.ToString(); 
+
+                if (accessToken == "" || accessToken == null)
+                {
+                    return BadRequest("Invalid Token/Missing Token");
+                }
+
+                JwtSecurityToken decodeToken = tokenService.DecodeToken(accessToken);
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                string? userId = decodeToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
                 JwtValidationResult tokenResult = tokenService.ValidateToken(accessToken);
                 if (tokenResult == JwtValidationResult.Valid)
                 {

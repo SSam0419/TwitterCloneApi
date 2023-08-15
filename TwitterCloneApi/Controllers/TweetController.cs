@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using TwitterCloneApi.Data;
 using TwitterCloneApi.Models;
 using TwitterCloneApi.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,16 +26,35 @@ namespace TwitterCloneApi.Controllers
         [HttpGet]
         [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
-        {
-            List<Tweet> tweets = await contextApi.Tweet
-             .Join(contextApi.User,
-                 t => t.AuthorId,
-                 u => u.Id,
-                 (tweet, user) => new { Tweet = tweet, Author = user })
-             .OrderByDescending(t => t.Tweet.CreatedAt)
-             .Select(t => t.Tweet)
-             .ToListAsync();
-            return Ok(tweets);
+        { 
+            var query = from tweet in contextApi.Tweet
+                        join user in contextApi.User on tweet.AuthorId equals user.Id into userGroup
+                        from user in userGroup 
+                        join comments in contextApi.Comment on tweet.TweetId equals comments.TweetId into commentGroup
+                        from comments in commentGroup.DefaultIfEmpty()
+                        join tweetLikes in contextApi.TweetLikes on tweet.TweetId equals tweetLikes.TweetId into tweetLikesGroup
+                        from tweetLikes in tweetLikesGroup.DefaultIfEmpty()
+                        select new
+                        {
+                            TweetId = tweet.TweetId,
+                            Content = tweet.Content,
+                            AuthorId = tweet.AuthorId,
+                            CreatedAt = tweet.CreatedAt,
+                            UpdatedAt = tweet.UpdatedAt,
+                            Title = tweet.Title,
+                            Author = new
+                            {
+                                Email = user.Email,
+                                IconLink = user.IconLink,
+                                Id = user.Id,
+                                Username = user.Username,
+                            },
+                            LikeTweet = tweetLikes ,
+                            Comments = comments                            
+                        };
+
+            var result = await query.ToListAsync();
+            return Ok(result);
         }
          
         [HttpGet]
@@ -52,8 +70,7 @@ namespace TwitterCloneApi.Controllers
         {
             public string tweetContent { get; set; } = "";
         }
-
-        [Authorize]
+         
         [HttpPost]
         [Route("AddTweet")]
         public async Task<IActionResult> AddTweet([FromBody] AddTweetBody addTweetBody)
@@ -124,6 +141,64 @@ namespace TwitterCloneApi.Controllers
                 return Ok(id);
             }
             return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("LikeTweet")]
+        public async Task<IActionResult> LikeTweet([FromBody] string TweetId)
+        {
+            try
+            {
+                Request.Cookies.TryGetValue("access_token", out var cookie);
+                if (cookie != null)
+                {
+
+                    string? authorId = tokenService.DecodeToken(cookie).Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+
+                    if (await contextApi.User.FindAsync(authorId) == null || authorId == null)
+                    {
+                        return BadRequest("Author Not Found");
+                    }
+
+                    TweetLikes tweetLikes = new TweetLikes {TweetId = TweetId, UserId = authorId };
+                    await contextApi.AddAsync(tweetLikes);
+                    await contextApi.SaveChangesAsync();
+                    return Ok();
+                }
+                return BadRequest();            
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost]
+        [Route("UnlikeTweet")]
+        public async Task<IActionResult> UnlikeTweet([FromBody] string TweetId)
+        {
+            try
+            {
+                Request.Cookies.TryGetValue("access_token", out var cookie);
+                if (cookie != null)
+                {
+
+                    string? authorId = tokenService.DecodeToken(cookie).Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+
+                    if (await contextApi.User.FindAsync(authorId) == null || authorId == null)
+                    {
+                        return BadRequest("Author Not Found");
+                    }
+
+                    TweetLikes tweetLikes = new TweetLikes { TweetId = TweetId, UserId = authorId };
+                    contextApi.TweetLikes.Remove(tweetLikes);
+                    await contextApi.SaveChangesAsync();
+                    return Ok();
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

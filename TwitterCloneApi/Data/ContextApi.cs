@@ -11,6 +11,7 @@ namespace TwitterCloneApi.Data
         }
 
         public DbSet<Tweet> Tweet { get; set; }
+        public DbSet<TweetLikes> TweetLikes { get; set; }
 
         public DbSet<User> User { get; set; }
         public DbSet<UserFollowings> UserFollowings { get; set; } 
@@ -40,13 +41,23 @@ namespace TwitterCloneApi.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //comment
-            modelBuilder.Entity<Comment>()
-                .HasMany<User>(c => c.Likes)
-                .WithMany();            
+            //comment       
             modelBuilder.Entity<User>()
                 .HasMany<Comment>()
                 .WithOne(c=>c.User).HasForeignKey(c => c.AuthorId);
+            //comment likes
+            modelBuilder.Entity<CommentLikes>()
+                .HasKey(cl => new { cl.UserId, cl.CommentId });
+            modelBuilder.Entity<CommentLikes>()
+                .HasOne(cl => cl.user)
+                .WithMany(u => u.CommentLikes)
+                .HasForeignKey(cl => cl.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CommentLikes>()
+                .HasOne(cl => cl.Comment)
+                .WithMany(c => c.Likes)
+                .HasForeignKey(cl => cl.CommentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //tweet 
             modelBuilder.Entity<Tweet>()
@@ -58,9 +69,21 @@ namespace TwitterCloneApi.Data
                 .HasMany<Comment>(t => t.Comments)
                 .WithOne(c => c.Tweet)
                 .HasForeignKey(c => c.TweetId);
-            modelBuilder.Entity<Tweet>()
-                .HasMany<User>(t => t.Likes)
-                .WithMany();
+
+            //tweet likes
+            modelBuilder.Entity<TweetLikes>()
+                .HasKey(tl => new { tl.UserId, tl.TweetId });
+            modelBuilder.Entity<TweetLikes>()
+                .HasOne(tl => tl.User)
+                .WithMany(u => u.TweetLikes)
+                .HasForeignKey(tl => tl.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TweetLikes>()
+                .HasOne(tl => tl.Tweet)
+                .WithMany(t => t.Likes)
+                .HasForeignKey(tl => tl.TweetId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
         }
     }

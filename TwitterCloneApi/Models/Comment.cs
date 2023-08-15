@@ -22,6 +22,18 @@ namespace TwitterCloneApi.Models
         [JsonIgnore]
         public Tweet Tweet { get; set; }
         [JsonIgnore]
-        public ICollection<User> Likes { get; set; } = new List<User>();
+        public ICollection<CommentLikes> Likes { get; set; } = new List<CommentLikes>();
     } 
+
+    public class CommentLikes
+    {
+        public string CommentId { get; set; }
+        public string UserId { get; set; }
+
+        //navigation properties
+        [JsonIgnore]
+        public User user { get; set; }
+        [JsonIgnore]
+        public Comment Comment { get; set; }
+    }
 }
