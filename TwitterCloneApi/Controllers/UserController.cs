@@ -22,20 +22,42 @@ namespace TwitterCloneApi.Controllers
             this.contextApi = contextApi;
         }
 
-        public class FollowUserModel
+
+        public class VisitProfileBody
+        {
+            public string userId { get; set; } = ""; 
+        }
+
+        [HttpPost]
+        [Route("VisitProfile")]
+        public async Task<IActionResult> VisitProfile([FromBody] VisitProfileBody VisitProfileBody)
+        {
+            string userId = VisitProfileBody.userId;
+            if (userId != null)
+            {
+                User? visitUser = await contextApi.User.FindAsync(userId);
+                if (visitUser != null)
+                {
+                    return Ok(visitUser);
+                }
+            }
+            return NotFound("Invaid User");
+        }
+
+
+        public class FollowUserBody
         {
             public string From { get; set; } = "";
             public string To { get; set; } = "";
         }
 
         //follow user
-        [HttpPost]
-        [Authorize]
+        [HttpPost] 
         [Route("follow")]
-        public async Task<IActionResult> FollowUser([FromBody] FollowUserModel followerUserModel)
+        public async Task<IActionResult> FollowUser([FromBody] FollowUserBody FollowUserBody)
         {
-            string from = followerUserModel.From;
-            string to = followerUserModel.To;
+            string from = FollowUserBody.From;
+            string to = FollowUserBody.To;
             User? fromUser = await contextApi.User.FindAsync(from);
             User? toUser = await contextApi.User.FindAsync(to);
 
@@ -56,13 +78,12 @@ namespace TwitterCloneApi.Controllers
         }
 
         //unfollower user
-        [HttpPost]
-        [Authorize]
+        [HttpPost] 
         [Route("Unfollow")]
-        public async Task<IActionResult> UnfollowUser([FromBody] FollowUserModel followerUserModel)
+        public async Task<IActionResult> UnfollowUser([FromBody] FollowUserBody FollowUserBody)
         {
-            string from = followerUserModel.From;
-            string to = followerUserModel.To;
+            string from = FollowUserBody.From;
+            string to = FollowUserBody.To;
             User? fromUser = await contextApi.User.FindAsync(from);
             User? toUser = await contextApi.User.FindAsync(to);
 

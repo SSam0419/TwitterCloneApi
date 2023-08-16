@@ -143,10 +143,16 @@ namespace TwitterCloneApi.Controllers
             return BadRequest();
         }
 
+        public class LikeTweetBody
+        {
+            public string TweetId { get; set; }
+        }
+
         [HttpPost]
         [Route("LikeTweet")]
-        public async Task<IActionResult> LikeTweet([FromBody] string TweetId)
+        public async Task<IActionResult> LikeTweet([FromBody] LikeTweetBody LikeTweetBody)
         {
+            string TweetId = LikeTweetBody.TweetId;
             try
             {
                 Request.Cookies.TryGetValue("access_token", out var cookie);
@@ -173,8 +179,9 @@ namespace TwitterCloneApi.Controllers
         }
         [HttpPost]
         [Route("UnlikeTweet")]
-        public async Task<IActionResult> UnlikeTweet([FromBody] string TweetId)
+        public async Task<IActionResult> UnlikeTweet([FromBody] LikeTweetBody UnikeTweetBody)
         {
+            string TweetId = UnikeTweetBody.TweetId;
             try
             {
                 Request.Cookies.TryGetValue("access_token", out var cookie);

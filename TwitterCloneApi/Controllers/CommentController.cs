@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TwitterCloneApi.Data;
 using TwitterCloneApi.Models;
+using TwitterCloneApi.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,10 +13,12 @@ namespace TwitterCloneApi.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ContextApi contextApi;
+        private readonly TokenService tokenService;
 
-        public CommentController(ContextApi contextApi)
+        public CommentController(ContextApi contextApi ,TokenService tokenService)
         {
             this.contextApi = contextApi;
+            this.tokenService = tokenService;
         }
 
         [HttpGet]
@@ -32,26 +35,42 @@ namespace TwitterCloneApi.Controllers
 
             return Ok(comments); 
         }
-         
-        [HttpGet("{id}")]
-        public string Get(int id)
+
+
+        public class AddCommentBody
         {
-            return "value";
+            public string TweetId { get; set; }
+            public string Content { get; set; }
         }
-         
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Route("AddComment")]
+        public async Task<IActionResult> AddComment([FromBody] AddCommentBody AddCommentBody)
         {
+            Request.Cookies.TryGetValue("access_token", out var cookie);
+            if (cookie != null)
+            {
+
+                string? authorId = tokenService.DecodeToken(cookie).Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+                if (authorId == null)
+                {
+                    return BadRequest("Invalid Author");
+                }
+                Comment comment = new Comment {
+                    AuthorId = authorId,
+                    TweetId = AddCommentBody.TweetId,
+                    Content = AddCommentBody.Content,
+                    CreatedAt = DateTime.Now,
+                    Id = Guid.NewGuid().ToString(),
+                    UpdatedAt = DateTime.Now,
+
+                };
+                await contextApi.Comment.AddAsync(comment);
+                await contextApi.SaveChangesAsync();
+                return Ok(new { AddCommentBody.TweetId, comment });
+            }
+            return BadRequest("Invalid author");
         }
          
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-         
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+       
     }
 }
