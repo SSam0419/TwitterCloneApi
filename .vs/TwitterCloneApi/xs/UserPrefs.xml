@@ -1,0 +1,37 @@
+﻿<Properties StartupConfiguration="{B9972E1C-477B-49D1-837C-0997B7E5CFF5}|Default">
+  <MonoDevelop.Ide.ItemProperties.TwitterCloneApi PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/leemingchun/Desktop/SideProjects/TwitterClone/TwitterCloneApi/TwitterCloneApi/Controllers/AuthController.cs" relfile="TwitterCloneApi/Controllers/AuthController.cs" line="66" column="1" />
+      <Breakpoint file="/Users/leemingchun/Desktop/SideProjects/TwitterClone/TwitterCloneApi/TwitterCloneApi/Middlewares/JwtCookieMiddleware.cs" relfile="TwitterCloneApi/Middlewares/JwtCookieMiddleware.cs" line="27" column="1" />
+      <Breakpoint file="/Users/leemingchun/Desktop/SideProjects/TwitterClone/TwitterCloneApi/TwitterCloneApi/Program.cs" relfile="TwitterCloneApi/Program.cs" line="55" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workbench ActiveDocument="TwitterCloneApi/Controllers/CommentController.cs">
+    <Files>
+      <File FileName="TwitterCloneApi/appsettings.json" />
+      <File FileName="TwitterCloneApi/Program.cs" Line="16" Column="1" />
+      <File FileName="TwitterCloneApi/Controllers/AuthController.cs" />
+      <File FileName="TwitterCloneApi/Properties/launchSettings.json" />
+      <File FileName="TwitterCloneApi/Middlewares/JwtCookieMiddleware.cs" />
+      <File FileName="TwitterCloneApi/Controllers/CommentController.cs" Line="84" Column="36" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="TwitterCloneApi">
+            <Node name="TwitterCloneApi">
+              <Node name="Controllers" expanded="True">
+                <Node name="CommentController.cs" selected="True" />
+              </Node>
+              <Node name="Middlewares" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>

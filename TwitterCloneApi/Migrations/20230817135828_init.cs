@@ -121,51 +121,51 @@ namespace TwitterCloneApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TweetUser",
+                name: "TweetLikes",
                 columns: table => new
                 {
-                    LikesId = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     TweetId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TweetUser", x => new { x.LikesId, x.TweetId });
+                    table.PrimaryKey("PK_TweetLikes", x => new { x.UserId, x.TweetId });
                     table.ForeignKey(
-                        name: "FK_TweetUser_Tweet_TweetId",
+                        name: "FK_TweetLikes_Tweet_TweetId",
                         column: x => x.TweetId,
                         principalTable: "Tweet",
                         principalColumn: "TweetId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TweetUser_User_LikesId",
-                        column: x => x.LikesId,
+                        name: "FK_TweetLikes_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CommentUser",
+                name: "CommentLikes",
                 columns: table => new
                 {
                     CommentId = table.Column<string>(type: "text", nullable: false),
-                    LikesId = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CommentUser", x => new { x.CommentId, x.LikesId });
+                    table.PrimaryKey("PK_CommentLikes", x => new { x.UserId, x.CommentId });
                     table.ForeignKey(
-                        name: "FK_CommentUser_Comment_CommentId",
+                        name: "FK_CommentLikes_Comment_CommentId",
                         column: x => x.CommentId,
                         principalTable: "Comment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CommentUser_User_LikesId",
-                        column: x => x.LikesId,
+                        name: "FK_CommentLikes_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -179,9 +179,9 @@ namespace TwitterCloneApi.Migrations
                 column: "TweetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommentUser_LikesId",
-                table: "CommentUser",
-                column: "LikesId");
+                name: "IX_CommentLikes_CommentId",
+                table: "CommentLikes",
+                column: "CommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tweet_AuthorId",
@@ -189,8 +189,8 @@ namespace TwitterCloneApi.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TweetUser_TweetId",
-                table: "TweetUser",
+                name: "IX_TweetLikes_TweetId",
+                table: "TweetLikes",
                 column: "TweetId");
 
             migrationBuilder.CreateIndex(
@@ -203,10 +203,10 @@ namespace TwitterCloneApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CommentUser");
+                name: "CommentLikes");
 
             migrationBuilder.DropTable(
-                name: "TweetUser");
+                name: "TweetLikes");
 
             migrationBuilder.DropTable(
                 name: "UserConfidentials");

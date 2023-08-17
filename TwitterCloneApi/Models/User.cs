@@ -17,6 +17,10 @@ namespace TwitterCloneApi.Models
         public UserConfidentials UserConfidentials { get; set; } = null!;
         [JsonIgnore]
         // Navigation properties
+        public ICollection<Tweet> Tweet { get; set; } = new List<Tweet>();
+        [JsonIgnore] 
+        public ICollection<Comment> Comment { get; set; } = new List<Comment>();
+        [JsonIgnore] 
         public ICollection<UserFollowings> ToFollowings { get; set; } = new List<UserFollowings>();
         [JsonIgnore]
         public ICollection<UserFollowings> FromFollowings { get; set; } = new List<UserFollowings>();
@@ -24,6 +28,7 @@ namespace TwitterCloneApi.Models
         public ICollection<TweetLikes> TweetLikes { get; set; } = new List<TweetLikes>(); 
         [JsonIgnore]
         public ICollection<CommentLikes> CommentLikes { get; set; } = new List<CommentLikes>();
+
     }
 
     public class UserFollowings

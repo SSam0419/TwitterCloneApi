@@ -27,46 +27,21 @@ namespace TwitterCloneApi.Controllers
         [HttpGet]
         [Route("GetAllTweetByDate")]
         public  async Task<IActionResult> GetAllTweetByDate()
-        {
-            var query = from tweet in contextApi.Tweet
-                        join user in contextApi.User on tweet.AuthorId equals user.Id into userGroup
-                        from user in userGroup
-                        join comments in contextApi.Comment on tweet.TweetId equals comments.TweetId into commentGroup
-                        from comments in commentGroup.DefaultIfEmpty()
-                        join tweetLikes in contextApi.TweetLikes on tweet.TweetId equals tweetLikes.TweetId into tweetLikesGroup
-                        from tweetLikes in tweetLikesGroup.DefaultIfEmpty()
-                        group new { comments, tweetLikes } by new
-                        {
-                            tweet.TweetId,
-                            tweet.Content,
-                            tweet.AuthorId,
-                            tweet.CreatedAt,
-                            tweet.UpdatedAt,
-                            tweet.Title,
-                            Author = new
-                            {
-                                user.Email,
-                                user.IconLink,
-                                user.Id,
-                                user.Username,
-                            },
-                        } into tweetGroup
-                        orderby tweetGroup.Key.CreatedAt descending
-                        select new
-                        {
-                            tweetGroup.Key.TweetId,
-                            tweetGroup.Key.Content,
-                            tweetGroup.Key.AuthorId,
-                            tweetGroup.Key.CreatedAt,
-                            tweetGroup.Key.UpdatedAt,
-                            tweetGroup.Key.Title,
-                            tweetGroup.Key.Author,
-                            likes = tweetGroup.Select(x => x.tweetLikes.UserId).Where(x => x != null).Distinct().ToList(),
-                            Comments = tweetGroup.Select(x => x.comments).Where(x => x != null).Distinct().ToList()
-                        };
-
-            var result = await query.ToListAsync();
-            return Ok(result);
+        {  
+            try
+            { 
+                List<Tweet> result = await contextApi.Tweet
+                    .Include(t => t.Author)  
+                    .Include(t => t.Likes)
+                    .Include(t => t.Comments).ThenInclude(c => c.Author)
+                    .ToListAsync();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine();
+            }
+            return BadRequest();
         }
 
         [HttpGet]

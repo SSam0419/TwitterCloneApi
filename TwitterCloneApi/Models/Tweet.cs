@@ -17,11 +17,11 @@ namespace TwitterCloneApi.Models
 
         //Foriegn Keys
         public string AuthorId { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public User Author { get; set; } = null!;
-        [JsonIgnore]
+        //[JsonIgnore]
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        [JsonIgnore]
+        //[JsonIgnore]
         public ICollection<TweetLikes> Likes { get; set; } = new List<TweetLikes>();
 
   
@@ -33,9 +33,9 @@ namespace TwitterCloneApi.Models
         public string TweetId { get; set; }
 
         //navigation properties
-        [JsonIgnore]
+        //[JsonIgnore]
         public User User { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public Tweet Tweet { get; set; }
     
     }

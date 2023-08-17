@@ -44,8 +44,8 @@ namespace TwitterCloneApi.Data
 
             //comment       
             modelBuilder.Entity<User>()
-                .HasMany<Comment>()
-                .WithOne(c=>c.User).HasForeignKey(c => c.AuthorId);
+                .HasMany<Comment>(u=>u.Comment)
+                .WithOne(c=>c.Author).HasForeignKey(c => c.AuthorId);
             //comment likes
             modelBuilder.Entity<CommentLikes>()
                 .HasKey(cl => new { cl.UserId, cl.CommentId });
@@ -63,7 +63,7 @@ namespace TwitterCloneApi.Data
             //tweet 
             modelBuilder.Entity<Tweet>()
                 .HasOne<User>(t => t.Author)
-                .WithMany()
+                .WithMany(u=>u.Tweet)
                 .HasForeignKey(t => t.AuthorId)
                 .IsRequired();
             modelBuilder.Entity<Tweet>()

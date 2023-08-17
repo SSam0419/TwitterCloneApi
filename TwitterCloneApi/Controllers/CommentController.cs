@@ -87,7 +87,7 @@ namespace TwitterCloneApi.Controllers
         [HttpPost]
         [Route("LikeComment")]
         public async Task<IActionResult> LikeComment([FromBody] LikeCommentBody LikeCommentBody)
-        {
+        { 
             string CommentId = LikeCommentBody.CommentId;
             try
             {

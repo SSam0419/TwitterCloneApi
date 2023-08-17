@@ -17,8 +17,8 @@ namespace TwitterCloneApi.Models
         //Foreign Key 
         public string AuthorId { get; set; }
         public string TweetId { get; set; }
-        [JsonIgnore]
-        public User User { get; set; }
+      
+        public User Author { get; set; }
         [JsonIgnore]
         public Tweet Tweet { get; set; }
         [JsonIgnore]
