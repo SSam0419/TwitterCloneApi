@@ -16,6 +16,7 @@ namespace TwitterCloneApi.Data
         public DbSet<User> User { get; set; }
         public DbSet<UserFollowings> UserFollowings { get; set; } 
         public DbSet<Comment> Comment { get; set; }
+        public DbSet<CommentLikes> CommentLikes { get; set; }
 
         public DbSet<UserConfidentials> UserConfidentials { get; set;}
 
