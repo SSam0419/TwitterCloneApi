@@ -33,7 +33,7 @@ namespace TwitterCloneApi.Controllers
                 List<Tweet> result = await contextApi.Tweet
                     .Include(t => t.Author)  
                     .Include(t => t.Likes)
-                    .Include(t => t.Comments).ThenInclude(c => c.Author)
+                    .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
                     .ToListAsync();
                 return Ok(result);
             }
