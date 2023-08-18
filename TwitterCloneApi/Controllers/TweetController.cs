@@ -131,6 +131,62 @@ namespace TwitterCloneApi.Controllers
             return BadRequest();
         }
 
+
+        public class BookmarkTweetBody
+        {
+            public string TweetId { get; set; } = "";
+            public string UserId { get; set; } = ""; 
+
+        }
+        [HttpPost]
+        [Route("BookmarkTweet")]
+        public async Task<IActionResult> BookmarkTweet([FromBody] BookmarkTweetBody BookmarkTweetBody)
+        {
+            try
+            {
+                TweetBookmarks? check = await contextApi.TweetBookmarks.FindAsync(new TweetBookmarks { TweetId = BookmarkTweetBody.TweetId, UserId = BookmarkTweetBody.UserId });
+                if (check == null)
+                {
+                    await contextApi.TweetBookmarks.AddAsync(new TweetBookmarks { TweetId = BookmarkTweetBody.TweetId, UserId = BookmarkTweetBody.UserId }) ;
+                } else
+                {
+                    contextApi.TweetBookmarks.Remove(check);
+                }
+                await contextApi.SaveChangesAsync();    
+                return Ok();
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);  
+            }
+        }
+
+
+
+        public class GetBookmarkedTweetBody
+        {
+            public string UserId { get; set; } = "";
+        }
+        [HttpPost]
+        [Route("GetBookmarkedTweet")]
+        public async Task<IActionResult> GetBookmarkedTweet([FromBody] GetBookmarkedTweetBody GetBookmarkedTweetBody)
+        {
+            try
+            {
+                List<Tweet> result = await contextApi.Tweet
+                 .Include(t => t.Author)
+                 .Include(t => t.Likes)
+                 .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
+                 .Where(t => t.TweetBookmarks.Any(tb => tb.UserId == GetBookmarkedTweetBody.UserId))
+                 .ToListAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         public class LikeTweetBody
         {
             public string TweetId { get; set; }
@@ -178,39 +234,7 @@ namespace TwitterCloneApi.Controllers
 
 
 
-
-
-
-        //[HttpPost]
-        //[Route("UnlikeTweet")]
-        //public async Task<IActionResult> UnlikeTweet([FromBody] LikeTweetBody UnikeTweetBody)
-        //{
-        //    string TweetId = UnikeTweetBody.TweetId;
-        //    try
-        //    {
-        //        Request.Cookies.TryGetValue("access_token", out var cookie);
-        //        if (cookie != null)
-        //        {
-
-        //            string? authorId = tokenService.DecodeToken(cookie).Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
-
-        //            if (await contextApi.User.FindAsync(authorId) == null || authorId == null)
-        //            {
-        //                return BadRequest("Author Not Found");
-        //            }
-
-        //            TweetLikes tweetLikes = new TweetLikes { TweetId = TweetId, UserId = authorId };
-        //            contextApi.TweetLikes.Remove(tweetLikes);
-        //            await contextApi.SaveChangesAsync();
-        //            return Ok(new {TweetId, authorId });
-        //        }
-        //        return BadRequest();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+         
     
     
     }

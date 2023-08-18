@@ -28,6 +28,8 @@ namespace TwitterCloneApi.Models
         public ICollection<TweetLikes> TweetLikes { get; set; } = new List<TweetLikes>(); 
         [JsonIgnore]
         public ICollection<CommentLikes> CommentLikes { get; set; } = new List<CommentLikes>();
+        [JsonIgnore]
+        public ICollection<TweetBookmarks> TweetBookmarks { get; set; } = new List<TweetBookmarks>();
 
     }
 

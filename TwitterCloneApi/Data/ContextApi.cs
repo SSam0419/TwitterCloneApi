@@ -12,6 +12,7 @@ namespace TwitterCloneApi.Data
 
         public DbSet<Tweet> Tweet { get; set; }
         public DbSet<TweetLikes> TweetLikes { get; set; }
+        public DbSet<TweetBookmarks> TweetBookmarks { get; set; }
 
         public DbSet<User> User { get; set; }
         public DbSet<UserFollowings> UserFollowings { get; set; } 
@@ -84,6 +85,17 @@ namespace TwitterCloneApi.Data
                 .WithMany(t => t.Likes)
                 .HasForeignKey(tl => tl.TweetId)
                 .OnDelete(DeleteBehavior.Restrict);
+            //tweet bookmark
+            modelBuilder.Entity<TweetBookmarks>()
+                .HasKey(tb => new {tb.UserId, tb.TweetId });
+            modelBuilder.Entity<TweetBookmarks>()
+                .HasOne(tb => tb.Tweet)
+                .WithMany(t => t.TweetBookmarks)
+                .HasForeignKey(tb => tb.TweetId);            
+            modelBuilder.Entity<TweetBookmarks>()
+                .HasOne(tb => tb.User)
+                .WithMany(u => u.TweetBookmarks)
+                .HasForeignKey(tb => tb.UserId);
 
 
         }
