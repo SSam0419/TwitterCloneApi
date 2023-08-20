@@ -33,6 +33,7 @@ namespace TwitterCloneApi.Controllers
                 List<Tweet> result = await contextApi.Tweet
                     .Include(t => t.Author)  
                     .Include(t => t.Likes)
+                    .Include(t=>t.TweetBookmarks)
                     .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
                     .ToListAsync();
                 return Ok(result);
@@ -48,7 +49,13 @@ namespace TwitterCloneApi.Controllers
         [Route("GetAllTweetByUserId/{id}")]
         public async Task<IActionResult> GetAllTweetByUserId([FromRoute] string id)
         {
-            List<Tweet> tweets = await contextApi.Tweet.Where(t => t.Author != null && t.Author.Id == id).ToListAsync();
+            List<Tweet> tweets = await contextApi.Tweet
+                    .Include(t => t.Author)
+                    .Include(t => t.Likes)
+                    .Include(t => t.TweetBookmarks)
+                    .Include(t => t.Comments)
+                    .ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
+                    .Where(t => t.Author != null && t.Author.Id == id).ToListAsync();
             return Ok(tweets);
         }
 
@@ -100,21 +107,37 @@ namespace TwitterCloneApi.Controllers
             return BadRequest("Author Not Found");
         }
 
+
+        public class EditTweetBody
+        {
+            public string tweetContent { get; set; } = "";
+        }
         [HttpPut]
         [Route("EditTweet/{id}")]
-        public async Task<IActionResult> EditTweet([FromRoute] string id,[FromBody] Tweet tweet)
+        public async Task<IActionResult> EditTweet([FromRoute] string id,[FromBody] EditTweetBody EditTweetBody)
         {
-            Tweet? tweetEdited = await contextApi.Tweet.FindAsync(id);
-            if ( tweetEdited != null)
+            try
             {
-                tweetEdited.Content = tweet.Content;
-                tweetEdited.Title = tweet.Title;
-                tweetEdited.UpdatedAt = DateTime.Now;
-                tweetEdited.Author = tweet.Author;                
-                await contextApi.SaveChangesAsync();
-                return Ok(tweetEdited);
+                Tweet? tweetEdited = await contextApi.Tweet
+                        .Include(t => t.Author)
+                        .Include(t => t.Likes)
+                        .Include(t => t.TweetBookmarks)
+                        .Include(t => t.Comments)
+                        .ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes).Where(t=>t.TweetId == id).FirstOrDefaultAsync();
+                if ( tweetEdited != null)
+                {
+                    tweetEdited.Content = EditTweetBody.tweetContent;
+                    tweetEdited.Title = EditTweetBody.tweetContent;
+                    tweetEdited.UpdatedAt = DateTime.Now.ToUniversalTime();              
+                    await contextApi.SaveChangesAsync();
+                    return Ok(tweetEdited);
+                }
+                return NotFound();
             }
-            return BadRequest();
+            catch  (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }  
          
         [HttpDelete]
@@ -144,11 +167,12 @@ namespace TwitterCloneApi.Controllers
         {
             try
             {
-                TweetBookmarks? check = await contextApi.TweetBookmarks.FindAsync(new TweetBookmarks { TweetId = BookmarkTweetBody.TweetId, UserId = BookmarkTweetBody.UserId });
+                TweetBookmarks? check = await contextApi.TweetBookmarks.Where((tb) => tb.TweetId == BookmarkTweetBody.TweetId && tb.UserId== BookmarkTweetBody.UserId).FirstOrDefaultAsync();
                 if (check == null)
                 {
                     await contextApi.TweetBookmarks.AddAsync(new TweetBookmarks { TweetId = BookmarkTweetBody.TweetId, UserId = BookmarkTweetBody.UserId }) ;
-                } else
+                }
+                else
                 {
                     contextApi.TweetBookmarks.Remove(check);
                 }
@@ -161,23 +185,18 @@ namespace TwitterCloneApi.Controllers
             }
         }
 
-
-
-        public class GetBookmarkedTweetBody
-        {
-            public string UserId { get; set; } = "";
-        }
-        [HttpPost]
-        [Route("GetBookmarkedTweet")]
-        public async Task<IActionResult> GetBookmarkedTweet([FromBody] GetBookmarkedTweetBody GetBookmarkedTweetBody)
+        [HttpGet]
+        [Route("GetBookmarkedTweet/{id}")]
+        public async Task<IActionResult> GetBookmarkedTweet([FromRoute] string id)
         {
             try
             {
                 List<Tweet> result = await contextApi.Tweet
                  .Include(t => t.Author)
                  .Include(t => t.Likes)
+                 .Include(t => t.TweetBookmarks)
                  .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
-                 .Where(t => t.TweetBookmarks.Any(tb => tb.UserId == GetBookmarkedTweetBody.UserId))
+                 .Where(t => t.TweetBookmarks.Any(tb => tb.UserId == id))
                  .ToListAsync();
                 return Ok(result);
             }
