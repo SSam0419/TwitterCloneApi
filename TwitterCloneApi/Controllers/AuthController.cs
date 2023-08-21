@@ -76,7 +76,7 @@ namespace TwitterCloneApi.Controllers
                 try
                 { 
                     string newId = Guid.NewGuid().ToString();
-                    User newUser = new User{ Email = registrationModel.username , Username = registrationModel.username,IconLink ="",Id = newId, }; 
+                    User newUser = new User{ Email = registrationModel.username , Bio="",Username = registrationModel.username,IconLink ="",Id = newId,CreatedAt=DateTime.Now.ToUniversalTime(),UpdatedAt=DateTime.Now.ToUniversalTime()}; 
                     UserConfidentials newUserConfidentials = new UserConfidentials{ 
                         Id= newId, 
                         Username=registrationModel.username,
@@ -102,16 +102,21 @@ namespace TwitterCloneApi.Controllers
             } 
         }
 
-        [Authorize]
+        public class LogoutBody
+        {
+            public string userId { get; set; } = "";
+        }
+
         [Route("log_out")]
-        public async Task<IActionResult> Logout([FromBody] string userId)
+        [HttpPost]
+        public async Task<IActionResult> Logout([FromBody] LogoutBody LogoutBody)
         {
             //delete tokens from client's cookie
             Response.Cookies.Delete("access_token");
             Response.Cookies.Delete("refresh_token");
 
             //delete tokens from database
-            UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u=> u.Id == userId);
+            UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u=> u.Id == LogoutBody.userId);
             if (user == null)
             {
                 return BadRequest("Invalid User Id");
