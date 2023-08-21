@@ -11547,31 +11547,27 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sam.mclee\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "E:\\Users\\leemi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\app_dev\\temp\\TwitterCloneApi\\TwitterCloneApi\\TwitterCloneApi.csproj",
+      "projectUniqueName": "E:\\Side Projects\\TwitterClone\\TwitterCloneApi\\TwitterCloneApi\\TwitterCloneApi.csproj",
       "projectName": "TwitterCloneApi",
-      "projectPath": "C:\\app_dev\\temp\\TwitterCloneApi\\TwitterCloneApi\\TwitterCloneApi.csproj",
-      "packagesPath": "C:\\Users\\sam.mclee\\.nuget\\packages\\",
-      "outputPath": "C:\\app_dev\\temp\\TwitterCloneApi\\TwitterCloneApi\\obj\\",
+      "projectPath": "E:\\Side Projects\\TwitterClone\\TwitterCloneApi\\TwitterCloneApi\\TwitterCloneApi.csproj",
+      "packagesPath": "E:\\Users\\leemi\\.nuget\\packages\\",
+      "outputPath": "E:\\Side Projects\\TwitterClone\\TwitterCloneApi\\TwitterCloneApi\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\sam.mclee\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "E:\\Users\\leemi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "E:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "E:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "E:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -11654,7 +11650,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.411\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "E:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
       }
     }
   }

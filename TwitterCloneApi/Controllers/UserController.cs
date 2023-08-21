@@ -77,6 +77,27 @@ namespace TwitterCloneApi.Controllers
             return Ok();
         }
 
+        public class UpdateProfileBody
+        {
+            public string bio { get; set; } = "";
+            public string userId { get; set; } = "";
+        }
+
+        [HttpPost]
+        [Route("UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileBody UpdateProfileBody)
+        {
+            User? user = await contextApi.User.FindAsync(UpdateProfileBody.userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.Bio = UpdateProfileBody.bio;
+            user.UpdatedAt = DateTime.Now.ToUniversalTime();    
+            await contextApi.SaveChangesAsync();
+            return Ok();
+        }
+
         //unfollower user
         [HttpPost] 
         [Route("Unfollow")]
