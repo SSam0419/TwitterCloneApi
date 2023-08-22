@@ -35,6 +35,7 @@ namespace TwitterCloneApi.Controllers
                     .Include(t => t.Likes)
                     .Include(t=>t.TweetBookmarks)
                     .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
+                    .OrderByDescending(t=>t.CreatedAt)
                     .ToListAsync();
                 return Ok(result);
             }
@@ -55,7 +56,7 @@ namespace TwitterCloneApi.Controllers
                     .Include(t => t.TweetBookmarks)
                     .Include(t => t.Comments)
                     .ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
-                    .Where(t => t.Author != null && t.Author.Id == id).ToListAsync();
+                    .Where(t => t.Author != null && t.Author.Id == id).OrderByDescending(t => t.CreatedAt).ToListAsync();
             return Ok(tweets);
         }
 

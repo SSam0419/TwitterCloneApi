@@ -110,10 +110,10 @@ namespace TwitterCloneApi.Controllers
         [Route("log_out")]
         [HttpPost]
         public async Task<IActionResult> Logout([FromBody] LogoutBody LogoutBody)
-        {
-            //delete tokens from client's cookie
-            Response.Cookies.Delete("access_token");
-            Response.Cookies.Delete("refresh_token");
+        { 
+
+            Response.Cookies.Append("access_token","",tokenService.cookieOptions);
+            Response.Cookies.Append("refresh_token","", tokenService.cookieOptions);
 
             //delete tokens from database
             UserConfidentials? user = await contextApi.UserConfidentials.FirstOrDefaultAsync(u=> u.Id == LogoutBody.userId);
@@ -148,6 +148,10 @@ namespace TwitterCloneApi.Controllers
                 if (tokenResult == JwtValidationResult.Valid)
                 {
                     User? profile = await contextApi.User.FindAsync(userId);
+                    if (profile == null)
+                    {
+                        return BadRequest("Invalid Token");
+                    }
                     return Ok(profile);
                 }
                 else  

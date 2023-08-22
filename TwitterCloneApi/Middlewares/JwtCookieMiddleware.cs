@@ -24,11 +24,11 @@ namespace TwitterCloneApi.Middlewares
         {
             string? token = context.Request.Cookies["access_token"];
 
-            if (token == null)
+            if (string.IsNullOrEmpty(token))
             {
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsync("Invalid token");
-                return;
+                context.Response.StatusCode = 404; 
+                await context.Response.WriteAsync("Invalid token"); 
+                return ;
             }
 
             if (!string.IsNullOrEmpty(token))
