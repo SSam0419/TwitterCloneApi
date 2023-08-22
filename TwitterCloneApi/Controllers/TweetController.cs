@@ -87,6 +87,9 @@ namespace TwitterCloneApi.Controllers
                     AuthorId = authorId,
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     UpdatedAt = DateTime.Now.ToUniversalTime(),
+                    Comments = new List<Comment> { },
+                    TweetBookmarks = new List<TweetBookmarks> { },
+                    Likes = new List<TweetLikes> { },
                     Title = tweetContent,
                     Author = author
                 };
@@ -139,19 +142,31 @@ namespace TwitterCloneApi.Controllers
                 return BadRequest(ex.Message);
             }
         }  
-         
+        
+        public class DeleteTweetBody
+        {
+            public string id { get; set; } = "";
+        }
+
         [HttpDelete]
         [Route("DeleteTweet/{id}")]
         public async Task<IActionResult> DeleteTweet([FromRoute] string id)
         {
-            Tweet? tweetDeleted = await contextApi.Tweet.FindAsync(id);
-            if (tweetDeleted != null)
+            try
             {
-                contextApi.Tweet.Remove(tweetDeleted);
-                await contextApi.SaveChangesAsync();
-                return Ok(id);
+                Tweet? tweetDeleted = await contextApi.Tweet.FindAsync(id);
+                if (tweetDeleted != null)
+                { 
+                    contextApi.Tweet.Remove(tweetDeleted);
+                    await contextApi.SaveChangesAsync();
+                    return Ok(id);
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

@@ -32,16 +32,14 @@ namespace TwitterCloneApi.Data
                 .HasKey(uf => new { uf.FromUserId, uf.ToUserId });
             modelBuilder.Entity<UserFollowings>()
                 .HasOne(uf => uf.FromUser)
-                .WithMany(u=>u.FromFollowings)
+                .WithMany(u => u.FromFollowings)
                 .HasForeignKey(uf => uf.FromUserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .IsRequired();
             modelBuilder.Entity<UserFollowings>()
                 .HasOne(uf => uf.ToUser)
-                .WithMany(u=>u.ToFollowings)
+                .WithMany(u => u.ToFollowings)
                 .HasForeignKey(uf => uf.ToUserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .IsRequired();
 
             //comment       
             modelBuilder.Entity<User>()
@@ -53,13 +51,11 @@ namespace TwitterCloneApi.Data
             modelBuilder.Entity<CommentLikes>()
                 .HasOne(cl => cl.user)
                 .WithMany(u => u.CommentLikes)
-                .HasForeignKey(cl => cl.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(cl => cl.UserId);
             modelBuilder.Entity<CommentLikes>()
                 .HasOne(cl => cl.Comment)
                 .WithMany(c => c.Likes)
-                .HasForeignKey(cl => cl.CommentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(cl => cl.CommentId);
 
             //tweet 
             modelBuilder.Entity<Tweet>()
@@ -67,6 +63,7 @@ namespace TwitterCloneApi.Data
                 .WithMany(u=>u.Tweet)
                 .HasForeignKey(t => t.AuthorId)
                 .IsRequired();
+            //tweet comment
             modelBuilder.Entity<Tweet>()
                 .HasMany<Comment>(t => t.Comments)
                 .WithOne(c => c.Tweet)
@@ -78,20 +75,18 @@ namespace TwitterCloneApi.Data
             modelBuilder.Entity<TweetLikes>()
                 .HasOne(tl => tl.User)
                 .WithMany(u => u.TweetLikes)
-                .HasForeignKey(tl => tl.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(tl => tl.UserId);
             modelBuilder.Entity<TweetLikes>()
                 .HasOne(tl => tl.Tweet)
                 .WithMany(t => t.Likes)
-                .HasForeignKey(tl => tl.TweetId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(tl => tl.TweetId);
             //tweet bookmark
             modelBuilder.Entity<TweetBookmarks>()
                 .HasKey(tb => new {tb.UserId, tb.TweetId });
             modelBuilder.Entity<TweetBookmarks>()
                 .HasOne(tb => tb.Tweet)
                 .WithMany(t => t.TweetBookmarks)
-                .HasForeignKey(tb => tb.TweetId);            
+                .HasForeignKey(tb => tb.TweetId);
             modelBuilder.Entity<TweetBookmarks>()
                 .HasOne(tb => tb.User)
                 .WithMany(u => u.TweetBookmarks)

@@ -134,12 +134,22 @@ namespace TwitterCloneApi.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("IconLink")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -213,13 +223,13 @@ namespace TwitterCloneApi.Migrations
                     b.HasOne("TwitterCloneApi.Models.Comment", "Comment")
                         .WithMany("Likes")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "user")
                         .WithMany("CommentLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Comment");
@@ -262,13 +272,13 @@ namespace TwitterCloneApi.Migrations
                     b.HasOne("TwitterCloneApi.Models.Tweet", "Tweet")
                         .WithMany("Likes")
                         .HasForeignKey("TweetId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "User")
                         .WithMany("TweetLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tweet");
@@ -292,13 +302,13 @@ namespace TwitterCloneApi.Migrations
                     b.HasOne("TwitterCloneApi.Models.User", "FromUser")
                         .WithMany("FromFollowings")
                         .HasForeignKey("FromUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "ToUser")
                         .WithMany("ToFollowings")
                         .HasForeignKey("ToUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FromUser");
