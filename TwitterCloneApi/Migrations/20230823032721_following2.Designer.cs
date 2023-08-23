@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TwitterCloneApi.Data;
@@ -11,9 +12,11 @@ using TwitterCloneApi.Data;
 namespace TwitterCloneApi.Migrations
 {
     [DbContext(typeof(ContextApi))]
-    partial class ContextApiModelSnapshot : ModelSnapshot
+    [Migration("20230823032721_following2")]
+    partial class following2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,13 +303,13 @@ namespace TwitterCloneApi.Migrations
             modelBuilder.Entity("TwitterCloneApi.Models.UserFollowings", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "FromUser")
-                        .WithMany("followings")
+                        .WithMany("followers")
                         .HasForeignKey("FromUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "ToUser")
-                        .WithMany("followers")
+                        .WithMany("followings")
                         .HasForeignKey("ToUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

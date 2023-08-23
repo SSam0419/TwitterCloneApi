@@ -19,6 +19,8 @@ namespace TwitterCloneApi.Models
         public DateTime UpdatedAt { get; set; }
 
         //foreign key          
+        public ICollection<UserFollowings> followings { get; set; } = new List<UserFollowings>(); 
+        public ICollection<UserFollowings> followers { get; set; } = new List<UserFollowings>();
         [JsonIgnore]
         public UserConfidentials UserConfidentials { get; set; } = null!;
         [JsonIgnore]
@@ -26,10 +28,6 @@ namespace TwitterCloneApi.Models
         public ICollection<Tweet> Tweet { get; set; } = new List<Tweet>();
         [JsonIgnore] 
         public ICollection<Comment> Comment { get; set; } = new List<Comment>();
-        [JsonIgnore] 
-        public ICollection<UserFollowings> ToFollowings { get; set; } = new List<UserFollowings>();
-        [JsonIgnore]
-        public ICollection<UserFollowings> FromFollowings { get; set; } = new List<UserFollowings>();
         [JsonIgnore]
         public ICollection<TweetLikes> TweetLikes { get; set; } = new List<TweetLikes>(); 
         [JsonIgnore]

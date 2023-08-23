@@ -32,12 +32,12 @@ namespace TwitterCloneApi.Data
                 .HasKey(uf => new { uf.FromUserId, uf.ToUserId });
             modelBuilder.Entity<UserFollowings>()
                 .HasOne(uf => uf.FromUser)
-                .WithMany(u => u.FromFollowings)
+                .WithMany(u => u.followings)
                 .HasForeignKey(uf => uf.FromUserId)
                 .IsRequired();
             modelBuilder.Entity<UserFollowings>()
                 .HasOne(uf => uf.ToUser)
-                .WithMany(u => u.ToFollowings)
+                .WithMany(u => u.followers)
                 .HasForeignKey(uf => uf.ToUserId)
                 .IsRequired();
 

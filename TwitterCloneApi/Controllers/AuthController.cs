@@ -147,7 +147,7 @@ namespace TwitterCloneApi.Controllers
                 JwtValidationResult tokenResult = tokenService.ValidateToken(accessToken);
                 if (tokenResult == JwtValidationResult.Valid)
                 {
-                    User? profile = await contextApi.User.FindAsync(userId);
+                    User? profile = await contextApi.User.Include(u => u.followers).Include(u => u.followings).Where(u => u.Id == userId).FirstOrDefaultAsync();
                     if (profile == null)
                     {
                         return BadRequest("Invalid Token");
