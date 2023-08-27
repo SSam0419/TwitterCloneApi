@@ -1318,3 +1318,5 @@ C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\refint\TwitterC
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\TwitterCloneApi.pdb
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\TwitterCloneApi.genruntimeconfig.cache
 C:\app_dev\temp\TwitterCloneApi\TwitterCloneApi\obj\Debug\net6.0\ref\TwitterCloneApi.dll
+E:\Side Projects\TwitterClone\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\DotNetEnv.dll
+E:\Side Projects\TwitterClone\TwitterCloneApi\TwitterCloneApi\bin\Debug\net6.0\Sprache.dll

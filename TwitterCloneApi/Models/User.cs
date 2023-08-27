@@ -21,6 +21,8 @@ namespace TwitterCloneApi.Models
         //foreign key          
         public ICollection<UserFollowings> followings { get; set; } = new List<UserFollowings>(); 
         public ICollection<UserFollowings> followers { get; set; } = new List<UserFollowings>();
+        public ICollection<ReTweet> ReTweet { get; set; } = new List<ReTweet>();    
+
         [JsonIgnore]
         public UserConfidentials UserConfidentials { get; set; } = null!;
         [JsonIgnore]
@@ -34,6 +36,7 @@ namespace TwitterCloneApi.Models
         public ICollection<CommentLikes> CommentLikes { get; set; } = new List<CommentLikes>();
         [JsonIgnore]
         public ICollection<TweetBookmarks> TweetBookmarks { get; set; } = new List<TweetBookmarks>();
+
 
     }
 

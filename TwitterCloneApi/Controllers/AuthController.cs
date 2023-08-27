@@ -57,7 +57,7 @@ namespace TwitterCloneApi.Controllers
                 Response.Cookies.Append("refresh_token", refreshToken, tokenService.cookieOptions);
                 user.RefreshToken = refreshToken;
                 await contextApi.SaveChangesAsync();
-                User signedUser = await contextApi.User.FirstOrDefaultAsync(u => u.Username == registrationModel.username);
+                User? signedUser = await contextApi.User.Include(u => u.followings).Include(u => u.followers).Where(u => u.Username == registrationModel.username).FirstOrDefaultAsync();
                 return Ok(signedUser);    
             }
         }

@@ -34,6 +34,7 @@ namespace TwitterCloneApi.Controllers
                     .Include(t => t.Author)  
                     .Include(t => t.Likes)
                     .Include(t=>t.TweetBookmarks)
+                    .Include(t=>t.ReTweet)
                     .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
                     .OrderByDescending(t=>t.CreatedAt)
                     .ToListAsync();
@@ -54,6 +55,7 @@ namespace TwitterCloneApi.Controllers
                     .Include(t => t.Author)
                     .Include(t => t.Likes)
                     .Include(t => t.TweetBookmarks)
+                    .Include(t => t.ReTweet)
                     .Include(t => t.Comments)
                     .ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
                     .Where(t => t.Author != null && t.Author.Id == id).OrderByDescending(t => t.CreatedAt).ToListAsync();
@@ -91,6 +93,7 @@ namespace TwitterCloneApi.Controllers
                     Comments = new List<Comment> { },
                     TweetBookmarks = new List<TweetBookmarks> { },
                     Likes = new List<TweetLikes> { },
+                    ReTweet = new List<ReTweet> { },
                     Title = tweetContent,
                     Author = author
                 };
@@ -211,6 +214,7 @@ namespace TwitterCloneApi.Controllers
                  .Include(t => t.Author)
                  .Include(t => t.Likes)
                  .Include(t => t.TweetBookmarks)
+                 .Include(t => t.ReTweet)
                  .Include(t => t.Comments).ThenInclude(c => c.Author).ThenInclude(c => c.CommentLikes)
                  .Where(t => t.TweetBookmarks.Any(tb => tb.UserId == id))
                  .ToListAsync();
@@ -267,6 +271,40 @@ namespace TwitterCloneApi.Controllers
             }
         }
 
+
+        public class AddReTweetBody
+        {
+            public string TweetId { get; set; }
+            public string UserId { get; set; }
+        }
+
+        [HttpPost]
+        [Route("AddReTweet")]
+        public async Task<IActionResult> AddReTweet([FromBody] AddReTweetBody AddReTweetBody)
+        {
+            try
+            {
+                ReTweet? check = await contextApi.ReTweet.Where(rt=>rt.TweetId==AddReTweetBody.TweetId&&rt.ReTweetedBy==AddReTweetBody.UserId).FirstOrDefaultAsync();
+
+                if (check == null)
+                {
+                    await contextApi.ReTweet.AddAsync(new ReTweet { ReTweetedBy = AddReTweetBody.UserId, TweetId = AddReTweetBody.TweetId });
+                }
+                else
+                {
+                    contextApi.ReTweet.Remove(check);
+                }
+
+                await contextApi.SaveChangesAsync();
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
          

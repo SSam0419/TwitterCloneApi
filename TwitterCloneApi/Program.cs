@@ -19,9 +19,13 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", false, true)
+    .AddEnvironmentVariables();
+
 builder.Services.AddDbContext<ContextApi>(options =>
 {
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("TwitterCloneApiContext"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("TwitterCloneApiContext")); 
     options.UseNpgsql(builder.Configuration.GetConnectionString("TwitterCloneApiContext"));
 }
 );
@@ -37,7 +41,11 @@ builder.Services.AddCors(options =>
                             .AllowCredentials();
                       });
 });
- 
+
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 var app = builder.Build();
 
@@ -60,6 +68,8 @@ app.UseWhen(context => protectedRoutes.Contains(context.Request.Path), applicati
     applicationBuilder.UseMiddleware<JwtCookieMiddleware>();
 });
 
+
+DotNetEnv.Env.Load();
 
 app.UseHttpsRedirection(); 
 

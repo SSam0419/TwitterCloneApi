@@ -25,6 +25,7 @@ namespace TwitterCloneApi.Models
         public ICollection<TweetLikes> Likes { get; set; } = new List<TweetLikes>();
 
         public ICollection<TweetBookmarks> TweetBookmarks { get; set;}
+        public ICollection<ReTweet> ReTweet { get; set;}
     }
 
     public class TweetLikes
@@ -54,5 +55,11 @@ namespace TwitterCloneApi.Models
         public Tweet Tweet { get; set; }
     }
 
-
+    public class ReTweet
+    {
+        public string ReTweetedBy { get; set;}
+        public string TweetId { get; set; } 
+        public User User { get; set; }
+        public Tweet Tweet { get; set; }
+    }
 }

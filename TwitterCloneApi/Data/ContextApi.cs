@@ -13,6 +13,7 @@ namespace TwitterCloneApi.Data
         public DbSet<Tweet> Tweet { get; set; }
         public DbSet<TweetLikes> TweetLikes { get; set; }
         public DbSet<TweetBookmarks> TweetBookmarks { get; set; }
+        public DbSet<ReTweet> ReTweet { get; set; }
 
         public DbSet<User> User { get; set; }
         public DbSet<UserFollowings> UserFollowings { get; set; } 
@@ -91,6 +92,18 @@ namespace TwitterCloneApi.Data
                 .HasOne(tb => tb.User)
                 .WithMany(u => u.TweetBookmarks)
                 .HasForeignKey(tb => tb.UserId);
+            //retweets
+            modelBuilder.Entity<ReTweet>()
+                .HasKey(rt => new { rt.TweetId, rt.ReTweetedBy });
+            modelBuilder.Entity<ReTweet>()
+                .HasOne(rt => rt.Tweet)
+                .WithMany(t => t.ReTweet)
+                .HasForeignKey(rt => rt.TweetId);
+            modelBuilder.Entity<ReTweet>()
+                .HasOne(rt => rt.User)
+                .WithMany(u => u.ReTweet)
+                .HasForeignKey(rt => rt.ReTweetedBy);
+
 
 
         }

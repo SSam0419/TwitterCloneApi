@@ -12,8 +12,8 @@ using TwitterCloneApi.Data;
 namespace TwitterCloneApi.Migrations
 {
     [DbContext(typeof(ContextApi))]
-    [Migration("20230821131135_addColumn")]
-    partial class addColumn
+    [Migration("20230827072231_addReTweet")]
+    partial class addReTweet
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,21 @@ namespace TwitterCloneApi.Migrations
                     b.HasIndex("CommentId");
 
                     b.ToTable("CommentLikes");
+                });
+
+            modelBuilder.Entity("TwitterCloneApi.Models.ReTweet", b =>
+                {
+                    b.Property<string>("TweetId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReTweetedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("TweetId", "ReTweetedBy");
+
+                    b.HasIndex("ReTweetedBy");
+
+                    b.ToTable("ReTweet");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
@@ -226,18 +241,37 @@ namespace TwitterCloneApi.Migrations
                     b.HasOne("TwitterCloneApi.Models.Comment", "Comment")
                         .WithMany("Likes")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "user")
                         .WithMany("CommentLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Comment");
 
                     b.Navigation("user");
+                });
+
+            modelBuilder.Entity("TwitterCloneApi.Models.ReTweet", b =>
+                {
+                    b.HasOne("TwitterCloneApi.Models.User", "User")
+                        .WithMany("ReTweet")
+                        .HasForeignKey("ReTweetedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TwitterCloneApi.Models.Tweet", "Tweet")
+                        .WithMany("ReTweet")
+                        .HasForeignKey("TweetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tweet");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
@@ -275,13 +309,13 @@ namespace TwitterCloneApi.Migrations
                     b.HasOne("TwitterCloneApi.Models.Tweet", "Tweet")
                         .WithMany("Likes")
                         .HasForeignKey("TweetId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "User")
                         .WithMany("TweetLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tweet");
@@ -303,15 +337,15 @@ namespace TwitterCloneApi.Migrations
             modelBuilder.Entity("TwitterCloneApi.Models.UserFollowings", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "FromUser")
-                        .WithMany("FromFollowings")
+                        .WithMany("followings")
                         .HasForeignKey("FromUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TwitterCloneApi.Models.User", "ToUser")
-                        .WithMany("ToFollowings")
+                        .WithMany("followers")
                         .HasForeignKey("ToUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FromUser");
@@ -330,6 +364,8 @@ namespace TwitterCloneApi.Migrations
 
                     b.Navigation("Likes");
 
+                    b.Navigation("ReTweet");
+
                     b.Navigation("TweetBookmarks");
                 });
 
@@ -339,9 +375,7 @@ namespace TwitterCloneApi.Migrations
 
                     b.Navigation("CommentLikes");
 
-                    b.Navigation("FromFollowings");
-
-                    b.Navigation("ToFollowings");
+                    b.Navigation("ReTweet");
 
                     b.Navigation("Tweet");
 
@@ -351,6 +385,10 @@ namespace TwitterCloneApi.Migrations
 
                     b.Navigation("UserConfidentials")
                         .IsRequired();
+
+                    b.Navigation("followers");
+
+                    b.Navigation("followings");
                 });
 #pragma warning restore 612, 618
         }

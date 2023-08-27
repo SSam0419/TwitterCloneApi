@@ -69,6 +69,21 @@ namespace TwitterCloneApi.Migrations
                     b.ToTable("CommentLikes");
                 });
 
+            modelBuilder.Entity("TwitterCloneApi.Models.ReTweet", b =>
+                {
+                    b.Property<string>("TweetId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReTweetedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("TweetId", "ReTweetedBy");
+
+                    b.HasIndex("ReTweetedBy");
+
+                    b.ToTable("ReTweet");
+                });
+
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
                 {
                     b.Property<string>("TweetId")
@@ -237,6 +252,25 @@ namespace TwitterCloneApi.Migrations
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("TwitterCloneApi.Models.ReTweet", b =>
+                {
+                    b.HasOne("TwitterCloneApi.Models.User", "User")
+                        .WithMany("ReTweet")
+                        .HasForeignKey("ReTweetedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TwitterCloneApi.Models.Tweet", "Tweet")
+                        .WithMany("ReTweet")
+                        .HasForeignKey("TweetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tweet");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TwitterCloneApi.Models.Tweet", b =>
                 {
                     b.HasOne("TwitterCloneApi.Models.User", "Author")
@@ -327,6 +361,8 @@ namespace TwitterCloneApi.Migrations
 
                     b.Navigation("Likes");
 
+                    b.Navigation("ReTweet");
+
                     b.Navigation("TweetBookmarks");
                 });
 
@@ -335,6 +371,8 @@ namespace TwitterCloneApi.Migrations
                     b.Navigation("Comment");
 
                     b.Navigation("CommentLikes");
+
+                    b.Navigation("ReTweet");
 
                     b.Navigation("Tweet");
 
