@@ -6,6 +6,8 @@ using TwitterCloneApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
+
 // Add services to the container.
 builder.Services.AddScoped<TokenService>();  
 builder.Services.AddControllers();
@@ -17,11 +19,7 @@ builder.Services.AddControllers()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Configuration
-    .AddJsonFile("appsettings.json", false, true)
-    .AddEnvironmentVariables();
+builder.Services.AddSwaggerGen(); 
 
 builder.Services.AddDbContext<ContextApi>(options =>
 {
@@ -41,11 +39,7 @@ builder.Services.AddCors(options =>
                             .AllowCredentials();
                       });
 });
-
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
+ 
 
 var app = builder.Build();
 
@@ -69,7 +63,7 @@ app.UseWhen(context => protectedRoutes.Contains(context.Request.Path), applicati
 });
 
 
-DotNetEnv.Env.Load();
+//DotNetEnv.Env.Load();
 
 app.UseHttpsRedirection(); 
 
