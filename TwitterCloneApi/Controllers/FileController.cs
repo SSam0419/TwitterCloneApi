@@ -35,7 +35,7 @@ namespace TwitterCloneApi.Controllers
 
         [HttpPost]
         [Route("uploadImage")]
-        public IActionResult uploadImage([FromForm] UploadImageBody _file)
+        public async Task<IActionResult> uploadImage([FromForm] UploadImageBody _file)
         {
             IFormFile file = _file.file; 
             //string? accessToken = HttpContext.Items["access_token"]?.ToString();
@@ -61,33 +61,70 @@ namespace TwitterCloneApi.Controllers
                 return BadRequest("No file uploaded");
             }
 
-            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploaded");
-            string uniqueFileName = userId.ToString();
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            //string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploaded");
+            //string uniqueFileName = userId.ToString();
+            //string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            //using (var stream = new FileStream(filePath, FileMode.Create))
+            //{
+            //    file.CopyTo(stream);
+            //}
+
+
+            //string uniqueFileName = userId.ToString();
+            byte[] fileContent;
+
+            using (var memoryStream = new MemoryStream())
             {
-                file.CopyTo(stream);
-            } 
-            return Ok(new { FileName = uniqueFileName });
+                file.CopyTo(memoryStream);
+                fileContent = memoryStream.ToArray();
+            }
+
+            User? u = await contextApi.User.Where(u=>u.Id == userId).FirstOrDefaultAsync();
+            if (u == null)
+            {
+                return NotFound();
+            }
+            u.IconLink = fileContent;
+            contextApi.SaveChanges();
+
+            return Ok();
         }
 
         [HttpGet]
         [Route("image/{fileName}")]
-        public IActionResult Download([FromRoute] string fileName)
+        public async Task<IActionResult> Download([FromRoute] string fileName)
         {
-            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploaded");
-            string filePath = Path.Combine(uploadsFolder, fileName);
-
-            if (!System.IO.File.Exists(filePath))
+            User? u = await contextApi.User.Where(u => u.Id == fileName).FirstOrDefaultAsync();
+            if (u != null && u.IconLink != null)
             {
-                return NotFound();
+
+                byte[] imageBytes = u.IconLink;
+                // Set the appropriate MIME type for JPEG
+                string mimeType = "image/jpeg";
+
+                // Set the desired file name for the response
+                string fileType = "image.jpg";
+
+                // Return the file as a response
+                return File(imageBytes, mimeType, fileType);
             }
+            return Ok();
 
-            var fileStream = new FileStream(filePath, FileMode.Open);
-            var mimeType = "application/octet-stream"; // Set the appropriate MIME type based on your file type
 
-            return File(fileStream, mimeType, fileName);
+
+            //string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploaded");
+            //string filePath = Path.Combine(uploadsFolder, fileName);
+
+            //if (!System.IO.File.Exists(filePath))
+            //{
+            //    return NotFound();
+            //}
+
+            //var fileStream = new FileStream(filePath, FileMode.Open);
+            //var mimeType = "application/octet-stream"; // Set the appropriate MIME type based on your file type
+
+            //return File(fileStream, mimeType, fileName);
         }
         
     }

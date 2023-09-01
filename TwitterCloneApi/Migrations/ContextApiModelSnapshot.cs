@@ -160,8 +160,8 @@ namespace TwitterCloneApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("IconLink")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("IconLink")
+                        .HasColumnType("bytea");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

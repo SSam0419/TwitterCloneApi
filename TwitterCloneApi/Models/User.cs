@@ -13,7 +13,7 @@ namespace TwitterCloneApi.Models
         public string Email { get; set; } = "";
         
         public string Bio { get; set; } = "";
-        public string? IconLink { get; set; }
+        public byte[]? IconLink { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

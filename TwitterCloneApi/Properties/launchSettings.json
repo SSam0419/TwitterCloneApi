@@ -15,6 +15,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:7021;http://localhost:5069",
       "environmentVariables": {
+        "CONNECTION_NEON": "Host=ep-shrill-breeze-92702869.ap-southeast-1.aws.neon.tech;Database=dev;Username=leemingchun419;Password=gULZWt2uG5MQ;Port=5432;Pooling=true;SSL Mode=Require;Trust Server Certificate=true;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true
@@ -24,6 +25,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "CONNECTION_NEON": "Host=ep-shrill-breeze-92702869.ap-southeast-1.aws.neon.tech;Database=dev;Username=leemingchun419;Password=gULZWt2uG5MQ;Port=5432;Pooling=true;SSL Mode=Require;Trust Server Certificate=true;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }

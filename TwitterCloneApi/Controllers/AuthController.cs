@@ -78,7 +78,7 @@ namespace TwitterCloneApi.Controllers
                 try
                 { 
                     string newId = Guid.NewGuid().ToString();
-                    User newUser = new User{ Email = registrationModel.username , Bio="",Username = registrationModel.username,IconLink ="",Id = newId,CreatedAt=DateTime.Now.ToUniversalTime(),UpdatedAt=DateTime.Now.ToUniversalTime()}; 
+                    User newUser = new User{ Email = registrationModel.username , Bio="",Username = registrationModel.username,IconLink = { },Id = newId,CreatedAt=DateTime.Now.ToUniversalTime(),UpdatedAt=DateTime.Now.ToUniversalTime()}; 
                     UserConfidentials newUserConfidentials = new UserConfidentials{ 
                         Id= newId, 
                         Username=registrationModel.username,

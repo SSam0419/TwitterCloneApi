@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using TwitterCloneApi.Data;
 using TwitterCloneApi.Middlewares;
@@ -23,27 +24,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ContextApi>(options =>
 {
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("TwitterCloneApiContext")); 
-    options.UseNpgsql(builder.Configuration.GetConnectionString("TwitterCloneApiContext"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("TwitterCloneApiContext")); 
+ 
+    //options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_NEON"));
 }
-);
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy( 
-//                      policy =>
-//                      {
-//                          policy.WithOrigins("http://twitter-clone-client.pages.dev")
-//                            .AllowAnyHeader()
-//                            .AllowAnyMethod()
-//                            .AllowCredentials();
-//                      });
-//});
+); 
  
 
-var app = builder.Build();
+var app = builder.Build(); 
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -55,7 +44,7 @@ app.UseRouting();
 app.UseCors(
      policy =>
      {
-         policy.WithOrigins("https://twitter-clone-client.pages.dev")
+         policy.WithOrigins("https://twitter-clone-client.pages.dev", "http://localhost:5173")
            .AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials();
