@@ -50,8 +50,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseRouting();
 app.UseCors("CORS");
+app.UseRouting();
 
 var protectedRoutes = new List<string>
 {
