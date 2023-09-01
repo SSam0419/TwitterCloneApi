@@ -24,9 +24,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ContextApi>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("TwitterCloneApiContext")); 
- 
-    //options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_NEON"));
+    //options.UseNpgsql(builder.Configuration.GetConnectionString("TwitterCloneApiContext"));
+
+    options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_NEON"));
 }
 ); 
  
