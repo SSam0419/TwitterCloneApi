@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,6 +13,7 @@ namespace TwitterCloneApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CORS")]
     public class FileController : ControllerBase
     {
         private readonly ContextApi contextApi;

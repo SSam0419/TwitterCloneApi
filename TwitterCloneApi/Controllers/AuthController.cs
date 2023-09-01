@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace TwitterCloneApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CORS")]
     public class AuthController : ControllerBase
     {
 

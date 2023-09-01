@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
@@ -12,6 +13,7 @@ namespace TwitterCloneApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CORS")]
     public class TweetController : ControllerBase
     {
         private readonly ContextApi contextApi;

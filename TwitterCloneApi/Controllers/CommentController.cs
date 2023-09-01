@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TwitterCloneApi.Data;
 using TwitterCloneApi.Models;
@@ -11,6 +12,7 @@ namespace TwitterCloneApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CORS")]
     public class CommentController : ControllerBase
     {
         private readonly ContextApi contextApi;
