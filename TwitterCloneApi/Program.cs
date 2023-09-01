@@ -33,7 +33,7 @@ builder.Services.AddDbContext<ContextApi>(options =>
 //    options.AddDefaultPolicy( 
 //                      policy =>
 //                      {
-//                          policy.WithOrigins("https://twitter-clone-client.pages.dev")
+//                          policy.WithOrigins("http://twitter-clone-client.pages.dev")
 //                            .AllowAnyHeader()
 //                            .AllowAnyMethod()
 //                            .AllowCredentials();
@@ -55,7 +55,7 @@ app.UseRouting();
 app.UseCors(
      policy =>
      {
-         policy.WithOrigins("https://twitter-clone-client.pages.dev")
+         policy.WithOrigins("http://twitter-clone-client.pages.dev")
            .AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials();
