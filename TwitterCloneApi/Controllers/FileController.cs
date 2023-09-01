@@ -13,7 +13,7 @@ namespace TwitterCloneApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors()]
+    
     public class FileController : ControllerBase
     {
         private readonly ContextApi contextApi;

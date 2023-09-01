@@ -28,17 +28,17 @@ builder.Services.AddDbContext<ContextApi>(options =>
 }
 );
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy( 
-                      policy =>
-                      {
-                          policy.WithOrigins("https://twitter-clone-client.pages.dev")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials();
-                      });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy( 
+//                      policy =>
+//                      {
+//                          policy.WithOrigins("https://twitter-clone-client.pages.dev")
+//                            .AllowAnyHeader()
+//                            .AllowAnyMethod()
+//                            .AllowCredentials();
+//                      });
+//});
  
 
 var app = builder.Build();
@@ -52,7 +52,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors();
+app.UseCors(
+     policy =>
+     {
+         policy.WithOrigins("https://twitter-clone-client.pages.dev")
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowCredentials();
+     }
+    );
 
 
 app.MapControllers();
