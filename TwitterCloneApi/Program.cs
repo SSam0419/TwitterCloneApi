@@ -30,7 +30,7 @@ builder.Services.AddDbContext<ContextApi>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "CORS",
+    options.AddDefaultPolicy( 
                       policy =>
                       {
                           policy.WithOrigins("https://twitter-clone-client.pages.dev")
@@ -49,9 +49,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("CORS");
+app.UseCors();
 
 
 app.MapControllers();

@@ -14,7 +14,7 @@ namespace TwitterCloneApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("CORS")]
+    [EnableCors()]
     public class UserController : ControllerBase
     {
 
