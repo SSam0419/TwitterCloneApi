@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CORS",
                       policy =>
                       {
-                          policy.WithOrigins("https://twitter-clone-client.pages.dev/")
+                          policy.WithOrigins("https://twitter-clone-client.pages.dev")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
@@ -49,9 +49,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors("CORS");
+app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("CORS");
+
+
+app.MapControllers();
+ 
+app.UseAuthentication();
 
 var protectedRoutes = new List<string>
 {
@@ -60,17 +65,7 @@ var protectedRoutes = new List<string>
 app.UseWhen(context => protectedRoutes.Contains(context.Request.Path), applicationBuilder =>
 { 
     applicationBuilder.UseMiddleware<JwtCookieMiddleware>();
-});
-
-
-//DotNetEnv.Env.Load();
-
-app.UseHttpsRedirection(); 
-
-app.MapControllers();
- 
-app.UseAuthentication();
-
+}); 
 app.UseAuthorization();
 
 app.Run();
