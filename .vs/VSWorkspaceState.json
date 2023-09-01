@@ -4,6 +4,6 @@
     "\\TwitterCloneApi",
     "\\TwitterCloneApi\\Controllers"
   ],
-  "SelectedNode": "\\TwitterCloneApi\\TwitterCloneApi.sln",
+  "SelectedNode": "\\TwitterCloneApi\\Controllers\\UserController.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -62,6 +62,25 @@ namespace TwitterCloneApi.Controllers
             return Ok(tweets);
         }
 
+        [HttpGet]
+        [Route("GetRetweetedByUserId/{id}")]
+        public async Task<IActionResult> GetRetweetedByUserId([FromRoute] string id)
+        {
+            List<Tweet> tweets = await contextApi.Tweet
+                    .Include(t => t.Author)
+                    .Include(t => t.Likes)
+                    .Include(t => t.TweetBookmarks)
+                    .Include(t => t.ReTweet)
+                    .Include(t => t.Comments)
+                    .ThenInclude(c => c.Author)
+                    .ThenInclude(c => c.CommentLikes)
+                    .Where(t => t.ReTweet != null && t.ReTweet.Any(rt => rt.ReTweetedBy.Contains(id)))
+                    .OrderByDescending(t => t.CreatedAt).ToListAsync();
+            return Ok(tweets);
+        }
+
+
+
 
         public class AddTweetBody
         {
