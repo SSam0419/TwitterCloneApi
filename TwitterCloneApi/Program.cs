@@ -55,7 +55,7 @@ app.UseRouting();
 app.UseCors(
      policy =>
      {
-         policy.WithOrigins("http://twitter-clone-client.pages.dev")
+         policy.WithOrigins("https://twitter-clone-client.pages.dev")
            .AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials();
@@ -71,11 +71,17 @@ var protectedRoutes = new List<string>
 {
     "/api/Auth/access_token", 
 };
+
 app.UseWhen(context => protectedRoutes.Contains(context.Request.Path), applicationBuilder =>
 { 
     applicationBuilder.UseMiddleware<JwtCookieMiddleware>();
-}); 
+});
+
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
  
