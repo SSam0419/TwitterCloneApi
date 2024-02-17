@@ -2,6 +2,8 @@
 This is a C# .NET Web API project for a Simple Twitter clone application. It utilizes Neon DB for data persistence and Entity Framework for database management. 
 The objective for this project is to practice creating web api to handle CRUD operation using c# dot net.
 
+This is the link to the Frontend Repo : https://github.com/SSam0419/TwitterCloneClient
+
 ## Features
 - User registration and authentication
 - Create, read, update, and delete tweets
